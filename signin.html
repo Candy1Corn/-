@@ -1,0 +1,53 @@
+<html>
+    
+    <head>
+        <meta charset="UTF-8">
+        <title>嘗試註冊頁面</title>
+        <link rel="stylesheet" href="style.css">    
+    </head>
+
+    <body>
+        <style type="text/css"></style>
+        <body background = "轉生史萊姆 ED.png">
+        <form action="" class="login">
+            <img src="史萊姆標題.png" width="405" height="174"> 
+            <div style="text-align:center;"><h2>註冊</h2></div>
+            <div style="text-align:center;"><h3><br>signin</h3></div><hr>
+
+            <p id="userID"><div style="text-align: center;"> 請填入帳號或電子郵件（必填）：</div></p>
+            <div style="text-align:center;"><input type="text" id="userID" name="userID" style="height:30px;width:250px;" placeholder="  mail" onclick="boxChoice(6, 'un', this)"></div>
+            <h4></h4>
+            <p id="userPWS1"><div style="text-align: center;"> 請輸入密碼（必填）：</div></p>
+            <div style="text-align:center;"><input type="password" id="userPWS" name="userPWS1" style="height:30px;width:250px;" placeholder=" passworld" onclick="boxChoice(6, 'un', this)"></div>
+            <h4></h4>
+            <p id="userPWS2"><div style="text-align: center;"> 請確認密碼（必填）：</div></p>
+            <div style="text-align:center;"><input type="password" id="userPWS" name="userPWS2" style="height:30px;width:250px;" placeholder=" passworld" onclick="boxChoice(6, 'un', this)"></div>
+            <h4></h4>
+            <div style="text-align:center;"><input type="button" id="signin" style="height:35px;width:90px" value="註冊" onclick="signin()"><br></div>
+            <h4></h4>
+            <div style="text-align:center;"><hr><br><font size="3">已經有帳號了嗎？</font><br></p></div>
+            <div style="text-align:center;"><input type="button" id="login" style="height:30px;width:50px" value="登入" onclick="login()"><br></div>
+            <br><hr>
+            <p id="message"></p>
+        </form>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jsftp/1.0.0/jsftp.min.js"></script>
+        <script src="https://smtpjs.com/v3/smtp.js"></script>
+        <script type="text/javascript">
+
+            function login() {
+                window.location.href = "login.html";
+            }
+
+            function boxChoice(choice, rId, button) {
+            	var buttons = document.getElementsByName(button.name);
+	            for (var i = 0; i < buttons.length; i++) {
+    		        buttons[i].style.borderColor = "red";
+	            }
+        	        button.style.borderColor = "green";
+    	            choices[rId] = choice;     
+            }
+
+        </script>
+
+    </body>

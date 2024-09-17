@@ -1,0 +1,69 @@
+<html>
+
+    <head>
+        <meta charset="UTF-8">
+        <title>嘗試登錄頁面</title>
+        <link rel="stylesheet" href="style.css">    
+    </head>
+
+    <body>
+        <style type="text/css"></style>
+        <body background = "轉生史萊姆 ED.png">
+        <form action="" class="login">
+            <img src="史萊姆標題.png" width="405" height="174"> 
+            <div style="text-align:center;"><h2>登錄</h2></div>
+            <div style="text-align:center;"><h3><br>login</h3></div><hr>
+
+            <p id="userID"><div style="text-align: center;"> 請填入帳號或電子郵件（必填）</div></p>
+            <div style="text-align:center;"><input type="text" id="userID" name="ID" style="height:30px;width:250px;" placeholder="  mail" onclick="boxChoice(1, 'un', this)"></div>
+            <h4></h4>
+            <p id="userPWS"><div style="text-align: center;"> 請輸入密碼（必填）</div></p>
+            <div style="text-align:center;"><input type="password" id="userPWS" name="PWS" style="height:30px;width:250px;" placeholder=" passworld" onclick="boxChoice(2, 'un', this)"></div>
+            <h4></h4>
+            <div style="text-align:center;"><input type="button" id="login" style="height:35px;width:90px" value="登錄" onclick="login()"><br></div>
+            <h4></h4>
+            <div style="text-align:center;"><hr><br><font size="3">沒有帳號嗎？</font><br></p></div>
+            <div style="text-align:center;"><input type="button" id="sighin" style="height:30px;width:50px" value="註冊" onclick="signin()"><br></div>
+            <br><hr>
+            <p id="message"></p>
+        </form> 
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jsftp/1.0.0/jsftp.min.js"></script>
+        <script src="https://smtpjs.com/v3/smtp.js"></script>
+        <script type="text/javascript">
+
+            const ID = "Candy1Corn";
+            const PWS = "HelloWorld";
+            
+            function login() {
+                const account = document.getElementById("userID").value;
+                const password = document.getElementById("userPWS").value;
+                const messageElement = document.getElementById("message");
+                
+                if (account === ID && password === PWS) {
+                    messageElement.textContent = "登入成功！";
+                    messageElement.style.color = "green";
+                } else {
+                    messageElement.textContent = "帳號或密碼錯誤";
+                    messageElement.style.color = "red";
+                }
+            }
+
+            function signin() {
+                window.location.href = "signin.html";
+            }
+
+            function boxChoice(choice, rId, button) {
+            	var buttons = document.getElementsByName(button.name);
+	            for (var i = 0; i < buttons.length; i++) {
+    		        buttons[i].style.borderColor = "red";
+	            }
+        	        button.style.borderColor = "green";
+    	            choices[rId] = choice;     
+            }
+
+        </script>
+
+    </body>
+
+</html>
