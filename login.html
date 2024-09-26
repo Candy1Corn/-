@@ -3,7 +3,8 @@
     <head>
         <meta charset="UTF-8">
         <title>嘗試登錄頁面</title>
-        <link rel="stylesheet" href="style.css">    
+        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="sighih.html">
     </head>
 
     <body>
@@ -15,37 +16,41 @@
             <div style="text-align:center;"><h3><br>login</h3></div><hr>
 
             <p id="userID"><div style="text-align: center;"> 請填入帳號或電子郵件（必填）</div></p>
-            <div style="text-align:center;"><input type="text" id="userID" name="ID" style="height:30px;width:250px;" placeholder="  mail" onclick="boxChoice(1, 'un', this)"></div>
+            <div style="text-align:center;"><input type="text" id="InputUserID" name="ID" style="height:30px;width:250px;" placeholder="  ID" onclick="boxChoice(1, 'InputUserID', this)"></div>
             <h4></h4>
             <p id="userPWS"><div style="text-align: center;"> 請輸入密碼（必填）</div></p>
-            <div style="text-align:center;"><input type="password" id="userPWS" name="PWS" style="height:30px;width:250px;" placeholder=" passworld" onclick="boxChoice(2, 'un', this)"></div>
+            <div style="text-align:center;"><input type="password" id="InputUserPWS" name="PWS" style="height:30px;width:250px;" placeholder=" passworld" onclick="boxChoice(2, 'InputUserPWS', this)"></div>
             <h4></h4>
-            <div style="text-align:center;"><input type="button" id="login" style="height:35px;width:90px" value="登錄" onclick="login()"><br></div>
+            <div style="text-align:center;"><input type="button" id="LoginButton" style="height:35px;width:90px" value="登錄" onclick="login(3, 'LoginButton', this)"><br></div>
             <h4></h4>
             <div style="text-align:center;"><hr><br><font size="3">沒有帳號嗎？</font><br></p></div>
-            <div style="text-align:center;"><input type="button" id="sighin" style="height:30px;width:50px" value="註冊" onclick="signin()"><br></div>
+            <div style="text-align:center;"><input type="button" id="SighinButton" style="height:30px;width:50px" value="註冊" onclick="signin(4, 'SighinButton', this)"><br></div>
             <br><hr>
-            <p id="message"></p>
+            <p id="message"><div style="text-align: center;"></div></div></p>
         </form> 
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jsftp/1.0.0/jsftp.min.js"></script>
         <script src="https://smtpjs.com/v3/smtp.js"></script>
         <script type="text/javascript">
-
-            const ID = "Candy1Corn";
-            const PWS = "HelloWorld";
             
             function login() {
-                const account = document.getElementById("userID").value;
-                const password = document.getElementById("userPWS").value;
-                const messageElement = document.getElementById("message");
-                
-                if (account === ID && password === PWS) {
+                var SID = "Candy1Corn";
+                var SPWS = "HelloWorld";
+                //console.log()
+                var InputID = document.getElementById("InputUserID").value;
+                var InputPWS = document.getElementById("InputUserPWS").value;
+                var messageElement = document.getElementById("message");
+                //console.log()
+                if (InputID === SID && InputPWS === SPWS) {
+                    <p id="userID"><div style="text-align: center;"> 登入成功！ </div></p>
                     messageElement.textContent = "登入成功！";
                     messageElement.style.color = "green";
+                    console.log()
                 } else {
+                    <p id="userID"><div style="text-align: center;"> 帳號或密碼錯誤！</div></p>
                     messageElement.textContent = "帳號或密碼錯誤";
                     messageElement.style.color = "red";
+                    console.log()
                 }
             }
 
