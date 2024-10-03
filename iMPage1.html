@@ -1,0 +1,86 @@
+<html>
+
+    <head>
+        <meta charset="UTF-8">
+        <title>Login CYTUS iM</title>
+        <link rel="stylesheet" href="iMPageStyle.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+
+    <body background = "C2iMBG.gif">
+        <style type="text/css"></style>
+        <form action="" class="PageTopic">
+            <div style="text-align:center;"><h2>NCU HOME iM</h2></div>
+            <div style="text-align:center;"><h3><br>微仿</h3></div>
+        </form>
+        <form action="" class="iMChatTopic">
+            <div style="text-align:center;"><h2>iM Chat</h2></div>
+        </form>
+        <form action="/search" class="SearchBox">
+            <div style="text-align: center;"><input type="search" id="SearchInputBox" name="SearchingFor" style="height:30px;width:250px;" placeholder="  search" onclick="ReadSmallData('SearchBoxFeedback')"></div>
+            <div style="text-align: center;"><p id="SearchBoxFeedback"></p></div>
+        </form>
+        <form action="" class="ShowDataBox">
+            <p><div style="text-align: center;"> 最新內容 </div></p>
+            <div style="text-align: center;"><input type="button" id="PosterButton1" style="height:35px;width:200px" value="顯示 iM SmallData" onclick="ReadSmallData('PosterBox1')"><br></div>
+            <div style="text-align: center;"><p id="PosterBox1"></p></div>
+            <div style="text-align: center;"><input type="button" id="PosterButton2" style="height:35px;width:200px" value="轉生" onclick="Operattt('PosterBox2')"><br></div>
+            <div style="text-align: center;"><p id="PosterBox2"></p></div>
+            <hr><p></p></hr>
+            <div style="text-align:center;"><input type="button" id="LogoutButton" style="height:30px;width:50px" value="登出" onclick="logout()"><br></div>
+        </form> 
+
+
+        
+        <script>
+            
+            let iMUsers = []
+
+            function ReadSmallData(MessageID) {
+                var messageElement = document.getElementById(MessageID);
+                
+                fetch('iMSmallData.json')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('HTTP error ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(iMUsers => {
+                    console.log("有獨到")
+                    
+                    iMUsers.forEach(User => {
+                        const EachUser = document.createElement('dict');
+                        EachUser.textContent = `用戶名稱: ${User.name}, 虛擬形象: ${User.avatar}, 職業: ${User.major}`;
+                        EachUser.style.color = "White";
+                        messageElement.appendChild(EachUser);
+                    });
+                })
+                .catch(error => {
+                console.error('讀取 JSON 檔案出錯:', error);
+                });
+            }
+
+            function Operattt(MessageID) {
+                var messageElement = document.getElementById(MessageID);
+                messageElement.textContent = "關於我轉生成異世界爆肝工程師！";
+                messageElement.style.color = "White";
+            }
+
+            function logout(){
+                window.location.href = "CyTus iM Login.html";
+            }
+
+            function boxChoice(choice, rId, button) {
+                var buttons = document.getElementsByName(button.name);
+                for (var i = 0; i < buttons.length; i++) {
+                    buttons[i].style.borderColor = "red";
+                }
+                button.style.borderColor = "green";
+            }
+
+        </script>
+
+    </body>
+
+</html>
