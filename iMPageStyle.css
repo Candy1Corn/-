@@ -1,0 +1,64 @@
+body{
+    font-family: Roboto;
+    background-size:100cap;
+    display:grid;
+    position: absolute;
+}
+
+.PageTopic {
+    transform:initial;
+    background-attachment:fixed;
+    background-color:rgba(218, 238, 245, 0.3);
+    backdrop-filter: blur(20px);
+    border-radius: 5px;
+    border-color:aqua;
+    width: 200px;
+    white-space:inherit;
+    color:rgb(25, 255, 255);
+    padding: 5px;
+}
+
+.SearchBox {
+    transform:translate(270%, 10%);
+    backdrop-filter: blur(20px);
+    background-color:rgba(255, 255, 255, 0.4);
+    border-radius: 10px;
+    border-color:rgba(105, 150, 236, 0.7);
+    width: 250px;
+    padding: 5px;
+}
+.ShowDataBox {
+    transform: translate(7%, 7%);
+    background-attachment: fixed;
+    background-color:rgba(218, 238, 245, 0.3) ;
+    backdrop-filter: blur(20px);
+    border-radius: 5px;
+    border-color:aqua;
+    width: 800px;
+    white-space:inherit;
+    color:rgb(228, 248, 248);
+    padding: 50px;
+}
+
+.SearchBox input{
+    background-color:rgba(255, 255, 255, 0.4);
+    border-radius: 5px;
+    border-color:rgba(105, 150, 236, 0.7);
+}
+
+
+.ShowDataBox input{
+    background-color:rgba(255, 255, 255, 0.4);
+    border-radius: 10px;
+    border-color:rgba(105, 150, 236, 0.7);
+}
+
+.iMChatTopic{
+    align-items:start;
+    justify-items:self-end;
+    border-radius: 5px;
+    width: 200px;
+    white-space:inherit;
+    color:rgb(25, 255, 255);
+    padding: 5px;
+}
