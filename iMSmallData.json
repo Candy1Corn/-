@@ -1,0 +1,24 @@
+[
+    {
+        "name": "NEKO#ΦωΦ",
+        "avatar": "NEKO#ΦωΦ",
+        "major": "Gaming",
+        "posts": [
+            "Node 03 日常",
+            "MeowBot 壞掉了。。。",
+            "9.29",
+            ["PAFF", "IVY"]
+        ]
+    },
+    {
+        "name": "PAFF",
+        "avatar": "PAFF_Aroma",
+        "major": "Singing",
+        "state": [
+            "New Song Release",
+            "Body Talk",
+            0,
+            ["ROBO_Head", "Helena", "Graff.J"]
+        ]
+    }
+]
