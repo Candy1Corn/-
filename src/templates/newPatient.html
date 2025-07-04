@@ -1,0 +1,42 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name = "viewport" content="width=device-width, initial-scale=1" />
+    <title>湯閣牙醫診所管理系統</title>
+    <meta name = "description" content="TTTEST" />
+    <link href = "{{ url_for('static', filename = 'style.css') }}" rel="stylesheet">
+  </head>
+  
+  <body>
+    <h2>添加病例</h2>
+  
+    <div class="Navbar">  
+
+      <form method="post" action="/newPatient">
+            <!-- name = input("請輸入病人姓名 : ")
+            birth = input("請輸入病人生日 : ")
+            phone = int(input("請輸入電話號碼 : "))
+            address = input("請輸入地址 : ")
+            description = input("是否有過敏史、家族史等等(直接填入或填無) : ") -->
+        <input class="NavbarInput" type = "text" name = "name" id = "name" placeholder = "請輸入病人姓名 : " />
+        <input class="NavbarInput" type = "text" name = "birth" id = "birth" placeholder = "請輸入病人生日 : " />
+        <input class="NavbarInput" type = "text" name = "phone" id = "phone" placeholder = "請輸入電話號碼 : " />
+        <input class="NavbarInput" type = "text" name = "address" id = "address" placeholder = "請輸入地址 : " />
+        <input class="NavbarInput" type = "text" name = "description" id = "description" placeholder = "是否有過敏史、家族史等等(直接填入或填無) : " />
+        <button type = "submit" onclick="pppprint()">Submit</button>
+      </form>
+
+      <div id = "result">
+      </div>
+      <a href="/index"><button class="goback">◀</button></a>
+
+    </div>
+
+  </body>
+</html>
+
+<script>
+  function pppprint() {
+    console.log("剛剛執行了添加病例的 def ，去觀察一下 小型資料.json ")
+  }
+</script>

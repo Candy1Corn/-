@@ -1,0 +1,179 @@
+{
+    "patients": [
+        9,
+        {
+            "P1": {
+                "name": "病人一號",
+                "dob": "2000-01-01",
+                "contact": "123456789",
+                "address": "某省某市某區某街道幾號幾樓",
+                "description": "有過過敏歷史；新增補充：無；新增補充：無",
+                "diagnosis": "牙痛",
+                "result": "補牙",
+                "prescription": null,
+                "paied": "已繳費"
+            },
+            "P2": {
+                "name": "cerc2re",
+                "dob": "34crewq",
+                "contact": 5423,
+                "address": "cerw",
+                "description": "cerw；新增補充：無；新增補充：無",
+                "diagnosis": "牙痛",
+                "result": "補牙",
+                "prescription": null,
+                "paied": "已繳費"
+            },
+            "P3": {
+                "name": "病人三號",
+                "dob": "wercq",
+                "contact": 2421,
+                "address": "rec24r",
+                "description": "c432r",
+                "diagnosis": "",
+                "result": "",
+                "prescription": null
+            },
+            "P4": {
+                "name": "P2",
+                "dob": "43r 2",
+                "contact": 4231234,
+                "address": "1234ce2",
+                "description": "234",
+                "diagnosis": "",
+                "result": "",
+                "prescription": null
+            },
+            "P5": {
+                "name": "P2",
+                "dob": "4325c43",
+                "contact": 3253,
+                "address": "fr43d2",
+                "description": "",
+                "diagnosis": "",
+                "result": "",
+                "prescription": null
+            },
+            "P6": {
+                "name": "病人",
+                "dob": "生日",
+                "contact": 12341234,
+                "address": "",
+                "description": "",
+                "diagnosis": "",
+                "result": "",
+                "prescription": null
+            },
+            "P7": {
+                "name": "qwerc",
+                "dob": "qwerc",
+                "contact": 1234,
+                "address": "qwerc",
+                "description": "qwerc",
+                "diagnosis": "",
+                "result": "",
+                "prescription": null
+            },
+            "P8": {
+                "name": "測試用病人",
+                "dob": "2025.1.1",
+                "contact": 12341234,
+                "address": "地址",
+                "description": "無",
+                "diagnosis": "",
+                "result": "",
+                "prescription": null
+            },
+            "P9": {
+                "name": "測試測試",
+                "dob": "12341@34",
+                "contact": 12341234,
+                "address": "rqcwer",
+                "description": "無",
+                "diagnosis": "",
+                "result": "",
+                "prescription": null
+            }
+        }
+    ],
+    "Docters": [
+        2,
+        {
+            "D1": {
+                "name": "醫生一號",
+                "dob": "2000-01-01",
+                "contact": "123456789",
+                "address": "某省某市某區某街道幾號幾樓",
+                "description": "有過過敏歷史"
+            },
+            "D2": {
+                "name": "醫生二號",
+                "dob": "2000-01-2",
+                "contact": "987654321",
+                "address": "某省某市某區某街道幾號幾樓",
+                "description": "有過過敏歷史"
+            },
+            "D3": {
+                "name": "醫生三號",
+                "dob": "1999-01-2",
+                "contact": "123478923",
+                "address": "某省某市某區某街道幾號幾樓",
+                "description": "有過過敏歷史"
+            }
+        }
+    ],
+    "expenses": [
+        {
+            "P1": {
+                "cost": 15,
+                "date": "2025-07-02 23:21:44",
+                "type": "補牙",
+                "paied": "2025-07-04 08:47:32"
+            },
+            "P2": {
+                "cost": 125,
+                "date": "2025-07-03 22:04:50",
+                "type": "補牙",
+                "paied": "2025-07-03 22:05:34"
+            }
+        }
+    ],
+    "appointments": [
+        {
+            "D1": {
+                "patientID": "P8",
+                "time": "2025-07-03 22:00:17",
+                "type": "牙痛"
+            },
+            "D2": {
+                "patientID": "P3",
+                "time": "2025-07-01 01:10:35",
+                "type": "諮詢"
+            }
+        }
+    ],
+    "medications": [
+        {
+            "Aspirin": {
+                "stock": 50,
+                "threshold": 10
+            },
+            "新的藥物": {
+                "stock": "100",
+                "threshold": "10"
+            },
+            "qwer": {
+                "stock": "1234",
+                "threshold": "12"
+            },
+            "vup 2k7ul4": {
+                "stock": "",
+                "threshold": ""
+            },
+            "新的藥": {
+                "stock": "100",
+                "threshold": "10"
+            }
+        }
+    ]
+}

@@ -1,0 +1,39 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name = "viewport" content="width=device-width, initial-scale=1" />
+    <title>湯閣牙醫診所管理系統</title>
+    <meta name = "description" content="TTTEST" />
+    <link href = "{{ url_for('static', filename = 'style.css') }}" rel="stylesheet">
+  </head>
+  
+  <body>
+
+    <h2>患者繳費</h2>
+  
+    <div class="Navbar">  
+
+      <form method="get" action = "/patientsPay">
+            <!--  patientID = input("請輸入您的ID: ") -->
+        <input type = "text" name = "patientID" id = "patientID" placeholder = "請輸入您的ID: " />
+        <button type = "submit" onclick="pppprint()">Submit</button>
+      </form>
+
+
+      <a href="/index"><button class="goback">◀</button></a>
+
+    </div>
+    <div class = "result">
+      <p> {{ 一句話 }} &deg; </p>
+      <!-- {% if 一句話 %}
+      <p>{{ 一句話 }}</p>
+      {% endif %} -->
+    </div>
+  </body>
+</html>
+
+<script>
+  function pppprint() {
+    console.log("剛剛執行了患者繳費的 def ，去觀察一下 小型資料.json ")
+  }
+</script>

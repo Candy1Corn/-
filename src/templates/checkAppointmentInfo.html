@@ -1,0 +1,40 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name = "viewport" content="width=device-width, initial-scale=1" />
+    <title>湯閣牙醫診所管理系統</title>
+    <meta name = "description" content="TTTEST" />
+    <link href = "{{ url_for('static', filename = 'style.css') }}" rel="stylesheet">
+  </head>
+
+  <body>
+
+    <h2>查看所有預約掛號情況</h2>
+  
+    <div class="Navbar">
+
+      <form action = "/checkAppointmentInfo">
+        <button type = "submit" onclick="pppprint()">查看所有預約掛號情況</button>
+      </form>
+
+
+      <a href="/index"><button class="goback">◀</button></a>
+
+    </div>
+    <div class = "result">
+      <ul>
+        {% for pid, info in patients.items() %}
+        <li>
+          醫生 {{ pid }} 已經有病患 {{ info.patientID }} 因為 {{ info.type }} 預約掛號
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </body>
+</html>
+
+<script>
+  function pppprint() {
+    console.log("剛剛執行了查看所有預約掛號情況的 def ，去觀察一下 小型資料.json ")
+  }
+</script>

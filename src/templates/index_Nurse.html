@@ -1,0 +1,35 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name = "viewport" content="width=device-width, initial-scale=1" />
+    <title>湯閣牙醫診所管理系統</title>
+    <meta name = "description" content="TTTEST" />
+    <link href = "{{ url_for('static', filename = 'index_IdentityStyle.css') }}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap" rel="stylesheet">
+
+  </head>
+  
+  <body>
+    <h1>湯閣牙醫診所管理系統</h1>
+    
+      <div class="Navbar">
+        <a href="/newPatient"><button>新患者登記</button></a>
+        <a href="/appointmentADocter"><button>患者預約醫生與掛號</button></a>
+        <a href="/checkAppointmentInfo"><button>新患者查看預約明細登記</button></a>
+        <a href="/checkPatientsInfo"><button>查看病人資料</button></a>
+        <a href="/patientsPay"><button>患者繳費登記</button></a>
+        <a href="/checkMedicationsInfo"><button>檢查藥品庫存</button></a>
+        <a href="/newMedications"><button>購入藥物</button></a>
+      </div>
+      <a href="/index"><button class="goback">◀</button></a>
+
+  </body>
+</html>
+
+
+<script>
+  window.addEventListener("load", function () {
+    const descBox = document.getElementById("desc");
+    descBox.classList.add("expanded");
+  });
+</script>

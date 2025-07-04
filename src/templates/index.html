@@ -1,0 +1,52 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name = "viewport" content="width=device-width, initial-scale=1" />
+    <title>湯閣牙醫診所管理系統</title>
+    <meta name = "description" content="TTTEST" />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap" rel="stylesheet">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link href = "{{ url_for('static', filename = 'indexStyle.css') }}" rel="stylesheet">
+    <!-- <link rel="stylesheet" href="indexStyle.css"> -->
+  </head>
+  <!-- 或許可以在這裡加上自另的快捷鍵，然後在旁邊 <p></p> 說明一下我定義的快捷鍵 -->
+  <body>
+    <h1>湯閣牙醫診所管理系統</h1>
+    <p></p>
+
+      <div class = "description1">
+        <h2>最專業的醫生，最值得信賴的技術</h2>
+        <p>五位來自不同醫學大學的博士畢業生</p>
+        <p>長時間的磨練與專業培訓，將會成為可靠的選擇</p>
+      </div>
+      <div class = "description2">
+        <h2>安全可靠的設計</h2>
+        <p>親手製作的系統與介面設計，力求一切貼合使用需求</p>
+      </div>
+
+
+      <div class="Navbar">
+        <a href="/index_Doctor"><button>DocTor</button></a>
+        <a href="/index_Nurse"><button>Nurse</button></a>
+        <a href="/index_Patients"><button>Patient</button></a>
+      </div>
+
+      <div id="description3">
+        <div class="footer-container">
+          <div class="footer-block">
+            <h4>診所地址</h4>
+            <p>本診所的地址</p>
+          </div>
+          <div class="footer-block">
+            <h4>聯繫電話</h4>
+            <p>本診所的電話</p>
+          </div>
+          <div class="footer-block">
+            <h4>加入我們</h4>
+            <p>開發者：魚湯</p>
+          </div>
+        </div>
+      </div>
+
+  </body>
+</html>

@@ -1,0 +1,46 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name = "viewport" content="width=device-width, initial-scale=1" />
+    <title>湯閣牙醫診所管理系統</title>
+    <meta name = "description" content="TTTEST" />
+    <link href = "{{ url_for('static', filename = 'style.css') }}" rel="stylesheet">
+  </head>
+  
+  <body>
+
+    <h2>醫生診斷與開藥批價</h2>
+
+    <div class="Navbar">  
+
+      <form method="post" action="/checkPrice">
+        <!-- patientID = input("請輸入病人病歷號碼: ")
+         description = input("病人是否有新的過敏史等等: 有、無/ Y、N")
+          -->
+        <!-- templates/checkPrice.html -->
+        病人 ID：<input name="patientID"><br>
+        病史補充（選填）：<input name="description"><br>
+        症狀描述：<input name="diagnosis"><br>
+        診斷結果：<input name="result" placeholder="洗牙 / 補牙 / 開藥 等"><br>
+        藥品（若開藥）：<input name="prescription" placeholder="多種用 , 分隔"><br>
+        費用：<input name="cost" type="number"><br>
+        <button type = "submit" onclick="pppprint()">Submit</button>
+      </form>
+
+      <div class = "result">        
+        {% if 一句話 %}
+        <p>{{ 一句話 }}</p>
+        {% endif %}
+      </div>
+      <a href="/index"><button class="goback">◀</button></a>
+
+    </div>
+
+  </body>
+</html>
+
+<script>
+  function pppprint() {
+    console.log("剛剛執行了醫生開藥批價的 def ，去觀察一下 小型資料.json ")
+  }
+</script>

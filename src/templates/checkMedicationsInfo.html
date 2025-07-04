@@ -1,0 +1,40 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name = "viewport" content="width=device-width, initial-scale=1" />
+    <title>湯閣牙醫診所管理系統</title>
+    <meta name = "description" content="TTTEST" />
+    <link href = "{{ url_for('static', filename = 'style.css') }}" rel="stylesheet">
+  </head>
+  
+  <body>
+
+    <h2>檢查藥物資訊</h2>
+  
+    <div class="Navbar">  
+
+      <form action = "/checkMedicationsInfo">
+        <button type = "submit" onclick="pppprint()">檢查藥物資訊</button>
+      </form>
+
+
+      <a href="/index"><button class="goback">◀</button></a>
+
+    </div>
+    <div class = "result">
+      <ul>
+        {% for pid, info in patients.items() %}
+        <li>
+          藥品名稱 : {{ pid }}, 庫存量 : {{ info.stock }}
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </body>
+</html>
+
+<script>
+  function pppprint() {
+    console.log("剛剛執行了檢查藥物資訊的 def ，去觀察一下 小型資料.json ")
+  }
+</script>

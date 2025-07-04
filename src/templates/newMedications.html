@@ -1,0 +1,38 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name = "viewport" content="width=device-width, initial-scale=1" />
+    <title>湯閣牙醫診所管理系統</title>
+    <meta name = "description" content="TTTEST" />
+    <link href = "{{ url_for('static', filename = 'style.css') }}" rel="stylesheet">
+  </head>
+  
+  <body>
+
+    <h2>新增藥品資料</h2>
+  
+    <div class = "Navbar">  
+
+      <form method="post" action = "/newMedications">
+        <!-- medicationsName = input("請輸入藥物名稱: ")
+        quantity = int(input("請輸入購買數量: ")) -->
+        <input type = "text" name = "medicationsName" id = "medicationsName" placeholder = "請輸入藥物名稱: " />
+        <input type = "text" name = "quantity" id = "quantity" placeholder = "請輸入購買數量: " />
+        <input type = "text" name = "threshold" id = "threshold" placeholder = "請設定預警線(如果庫存低於此設定的數量，將會提醒): " />
+        <button type = "submit" onclick="pppprint()">Submit</button>
+      </form>
+
+      <div id = "result">
+      </div>
+      <a href="/index"><button class="goback">◀</button></a>
+
+    </div>
+
+  </body>
+</html>
+
+<script>
+  function pppprint() {
+    console.log("剛剛執行了新增藥品資料的 def ，去觀察一下 小型資料.json ")
+  }
+</script>

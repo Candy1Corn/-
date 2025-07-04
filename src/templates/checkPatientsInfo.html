@@ -1,0 +1,40 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name = "viewport" content="width=device-width, initial-scale=1" />
+    <title>湯閣牙醫診所管理系統</title>
+    <meta name = "description" content="TTTEST" />
+    <link href = "{{ url_for('static', filename = 'style.css') }}" rel="stylesheet">
+  </head>
+  
+  <body>
+
+    <h2>查看所有病例</h2>
+  
+    <div class="Navbar">
+
+      <form action = "/checkPatientsInfo">
+        <button type = "submit" onclick="pppprint()">查看所有病例</button>
+      </form>
+
+
+      <a href="/index"><button class="goback">◀</button></a>
+
+    </div>
+    <div class = "result">
+      <ul>
+        {% for pid, info in patients.items() %}
+        <li>
+          病歷號碼 : {{ pid }}, 病人姓名 : {{ info.name }}, 生日 : {{ info.dob }},  連絡電話 : {{info.contact}}
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </body>
+</html>
+
+<script>
+  function pppprint() {
+    console.log("剛剛執行了查看所有病例的 def ，去觀察一下 小型資料.json ")
+  }
+</script>

@@ -1,0 +1,39 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name = "viewport" content="width=device-width, initial-scale=1" />
+    <title>湯閣牙醫診所管理系統</title>
+    <meta name = "description" content="TTTEST" />
+    <link href = "{{ url_for('static', filename = 'style.css') }}" rel="stylesheet">
+  </head>
+  
+  <body>
+
+    <h2>預約掛號</h2>
+  
+    <div class="Navbar">  
+
+      <form method="post" action = "/appointmentADocter">
+            <!--  doctorID = input("請輸入醫生ID: ")
+            patientID = input("請輸入病人病歷號碼: ")
+            看診原因 = input("請輸入看診需求(定期檢查牙齒/ 洗牙/ 牙痛/ 蛀牙/ 牙齦出血/ 諮詢整牙 等等) : ") -->
+        <input type = "text" name = "doctorID" id = "doctorID" placeholder = "請輸入醫生ID: " />
+        <input type = "text" name = "patientID" id = "patientID" placeholder = "請輸入病人病歷號碼: " />
+        <input type = "text" name = "看診原因" id = "看診原因" placeholder = "請輸入看診需求(定期檢查牙齒/ 洗牙/ 牙痛/ 蛀牙/ 牙齦出血/ 諮詢整牙 等等) : " />
+        <button type = "submit" onclick="pppprint()">預約掛號</button>
+      </form>
+
+      <div id = "result">
+      </div>
+      <a href="/index"><button class="goback">◀</button></a>
+
+    </div>
+
+  </body>
+</html>
+
+<script>
+  function pppprint() {
+    console.log("剛剛執行了預約掛號的 def ，去觀察一下 小型資料.json ")
+  }
+</script>
