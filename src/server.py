@@ -143,16 +143,16 @@ def checkPrice():       # 可用
             json.dump(data, file, ensure_ascii=False, indent=4)
 
         messages.append("批價與診斷紀錄已更新成功")
-        return render_template("checkPrice.html", 一句話="；".join(messages))
+        return render_template("checkPrice.html", oneSentence="；".join(messages))
 
     return render_template("checkPrice.html")
 
 @app.route('/patientsPay', methods=['GET'])
 def patientsPay():      # 可用
     patientID = request.args.get('patientID')
-    結果 = 患者繳費(patientID)
+    feedBack = 患者繳費(patientID)
     return render_template( "patientsPay.html",
-                           一句話 = 結果)
+                           oneSentence = feedBack)
 
 @app.route('/checkMedicationsInfo')
 def checkMedicationsInfo():

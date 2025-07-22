@@ -45,7 +45,6 @@ def 患者預約醫生與掛號():     # 護士會依照病人要求(會判斷�
     with open(os.path.join(os.getcwd(), 'src/小型資料.json'), 'w', encoding='utf-8') as file:
         json.dump(data, file, ensure_ascii=False, indent=4)
 
-
 def 查看預約明細():     # 醫生看自己的預約明細
     with open( os.path.join(os.getcwd(), 'src/小型資料.json'), 'r', encoding='utf-8') as file:
         data = json.load(file)
