@@ -82,30 +82,30 @@ input:focus {
 }
 
 #description3 {
-  height: 150px;
-  background-color: #1e1e1e;
-  color: rgb(194, 194, 194);
-  width: 100%;
-  padding: 2rem 1rem;
+    height: 150px;
+    background-color: #1e1e1e;
+    color: rgb(194, 194, 194);
+    width: 100%;
+    padding: 2rem 1rem;
 }
 
 .footer-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  max-width: 1000px;
-  margin: 0 auto;
-  flex-wrap: wrap;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    max-width: 1000px;
+    margin: 0 auto;
+    flex-wrap: wrap;
 }
 
 .footer-block {
-  width: 30%;
-  min-width: 200px;
-  text-align: center;
+    width: 30%;
+    min-width: 200px;
+    text-align: center;
 }
 
 .footer-block h4 {
-  font-size: 1.2rem;
-  margin-bottom: 0.5rem;
-  font-weight: bold;
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
 }

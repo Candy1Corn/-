@@ -60,21 +60,21 @@ input:focus {
 }
 
 .description1 {
-  position: relative;
-  width: 100%;
-  height: 0px;
-  overflow: hidden;
-  background-color: #f8f8f8;
-  text-align: center;
-  transition: height 2s ease;
-  box-shadow: 0 0 10px #999;
-  padding: 0 10px;
+    position: relative;
+    width: 100%;
+    height: 0px;
+    overflow: hidden;
+    background-color: #f8f8f8;
+    text-align: center;
+    transition: height 2s ease;
+    box-shadow: 0 0 10px #999;
+    padding: 0 10px;
 }
 
 .description1.expanded {
-  height: 150px;
-  padding-top: 10px;
-  padding-bottom: 10px;
+    height: 150px;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 .goback {
