@@ -2,9 +2,16 @@
   import svelteLogo from './assets/svelte.svg'
   import viteLogo from '/vite.svg'
   import Counter from './lib/Counter.svelte'
+  import { Router, Route } from 'svelte-routing';
+  import ViewPatientsInfo from './routes/viewPatientsInfo/index.svelte';
 </script>
 
 <main>
+
+  <Router>
+    <Route path="/viewPatientsInfo" component={ViewPatientsInfo} />
+  </Router>
+
   <div>
     <a href="https://vite.dev" target="_blank" rel="noreferrer">
       <img src={viteLogo} class="logo" alt="Vite Logo" />

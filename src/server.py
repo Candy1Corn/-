@@ -21,9 +21,24 @@ import json
 
             ##################### 加上 redirect() #################ˇew;r;ho lvucqnuoi32prewk;
 
+
 app = Flask(__name__)     # 參照上方，所以，種是使用它的預設：一些html 檔案預設放在叫做template 的資料夾裡面
 # Flask 看到例外就回傳 500，終端機才會列出 traceback
 
+
+
+##################### Flask + Svelte #####################
+# Svelte 應用程式將會負責所有的畫面渲染。它會透過 HTTP 請求 (API calls) 從 Python 後端獲取資料，然後動態地在瀏覽器中建立使用者介面
+
+@app.route('/viewPatientsInfo', methods=['GET'])       # 當有來自 /api/patients 這個網址的 GET 請求時，請執行下面的 get_patients 函式
+def viewPatientsInfo():
+    with open("src/小型資料.json", "r", encoding="utf-8") as file:
+        data = json.load(file)
+    return jsonify(data["patients"][1])
+
+
+
+###################### Flask + html ######################
 @app.route('/')
 @app.route('/index')
 def index():        # 可用

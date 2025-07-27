@@ -8,7 +8,7 @@ def create_connection():
     connection = mysql.connector.connect(
         host="localhost",         # 資料庫主機
         user="root",              # 使用者名稱
-        password="no_password", # 密碼
+        password="F1shPoundMountainintheSouth", # 密碼
         database="patient_management"  # 資料庫名稱
     )
     return connection
