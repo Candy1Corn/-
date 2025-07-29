@@ -38,30 +38,6 @@
     {#if Object.keys(patients).length == 0}
         <p>正在從伺服器載入資料</p>
     {:else}
-        <table border="1">      <!-- 這是甚麼? -->
-            <thead>      <!-- 這是甚麼? -->
-                <tr>
-                    <th>病歷號碼</th>
-                    <th>病人姓名</th>
-                    <th>生日</th>
-                    <th>連絡電話</th>
-                </tr>
-            </thead>
-        
-            <tbody>
-                <!-- #each 是 Svelte 的迴圈語法 -->
-                {#each Object.entries(patients) as [pid, info]}      <!-- 為甚麼 as [pid, info] 有兩項在括號裡面? -->
-                <tr>
-                    <td>{pid}</td>
-                    <td>{info.name}</td>
-                    <td>{info.dob}</td>
-                    <td>{info.contact}</td>
-                </tr>
-                {/each}
-            </tbody>
-
-        </table>
-
         <table border="1" style="border-collapse: collapse; width: 100%;">      <!-- table?這是甚麼?是 HTML 表格標籤，border="1" 設定邊框寬度 -->
             <thead>      <!-- threads?這是甚麼? -->
                 <tr style="background-color: #f0f0f0;">
