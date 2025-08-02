@@ -12,23 +12,29 @@
         prescription: string | null;
     };
 
-    let patients: Record<string, PatientInfo> = {};   // 用來儲存從 API 獲取的病患資料
-
+    let patients: Record<string, PatientInfo> = {}; // 初始空物件
+    let loading = true;
+    let error: string | null = null;
 
     onMount(async () => {   // async 是甚麼：是 JavaScript 的異步函數關鍵字，讓函數能夠處理非同步操作（如 API 請求）
         try {
-            // 修正 API 端點 - 改為與後端匹配的路徑
-            const response = await fetch('http://localhost:8000/viewPatientsInfo');
-
+            const response = await fetch('http://localhost:8000/api/viewPatientsInfo');
+            console.log(response);
             if (!response.ok) {
-                throw new Error('Network response was not ok')
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-            patients = await response.json();
-        } catch (error) {
-            console.error('獲取病患資料失敗:', error);
-        }
-    })
+            let data = await response.json();
+            
+            patients = data; // 直接使用物件
 
+            loading = false;
+        } catch (err) {
+            console.error('獲取病患資料失敗:', err);
+            error = '無法載入病患資料，請檢查伺服器連線';
+            loading = false;
+        }
+    });
+    
 </script>
 
 
@@ -38,30 +44,6 @@
     {#if Object.keys(patients).length == 0}
         <p>正在從伺服器載入資料</p>
     {:else}
-        <table border="1">      <!-- 這是甚麼? -->
-            <thead>      <!-- 這是甚麼? -->
-                <tr>
-                    <th>病歷號碼</th>
-                    <th>病人姓名</th>
-                    <th>生日</th>
-                    <th>連絡電話</th>
-                </tr>
-            </thead>
-        
-            <tbody>
-                <!-- #each 是 Svelte 的迴圈語法 -->
-                {#each Object.entries(patients) as [pid, info]}      <!-- 為甚麼 as [pid, info] 有兩項在括號裡面? -->
-                <tr>
-                    <td>{pid}</td>
-                    <td>{info.name}</td>
-                    <td>{info.dob}</td>
-                    <td>{info.contact}</td>
-                </tr>
-                {/each}
-            </tbody>
-
-        </table>
-
         <table border="1" style="border-collapse: collapse; width: 100%;">      <!-- table?這是甚麼?是 HTML 表格標籤，border="1" 設定邊框寬度 -->
             <thead>      <!-- threads?這是甚麼? -->
                 <tr style="background-color: #f0f0f0;">
@@ -90,3 +72,22 @@
     {/if}
 
 </main>
+
+
+
+<style>
+    main {
+        padding: 20px;
+        font-family: Arial, sans-serif;
+    }
+    
+    table {
+        margin-top: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    h1 {
+        color: #333;
+        text-align: center;
+    }
+</style>

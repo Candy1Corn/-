@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify
-from flask_cors import CORS
+from flask_cors import CORS     # 請求跨域
 from 牙醫診所管理系統 import 新患者登記, 患者預約醫生與掛號, 醫生開藥與批價, 患者繳費, 檢查藥品庫存, 購入藥物
 from waitress import serve
 import json
@@ -31,13 +31,37 @@ CORS(app)  # 允許所有來源的跨域請求
 ##################### Flask + Svelte #####################
 # Svelte 應用程式將會負責所有的畫面渲染。它會透過 HTTP 請求 (API calls) 從 Python 後端獲取資料，然後動態地在瀏覽器中建立使用者介面
 
-@app.route('/api/viewPatientsInfo', methods=['GET'])       # 當有來自 /api/patients 這個網址的 GET 請求時，請執行下面的 get_patients 函式
-def api_viewPatientsInfo():
+@app.route('/api/viewPatientsInfo', methods=['GET'])
+def api_view_patients_info():
+    """API 端點：返回所有病患資料"""
+    try:
+        with open("src/小型資料.json", "r", encoding="utf-8") as file:
+            data = json.load(file)
+        
+        # 返回病患資料，注意數據結構
+        patients_data = data["patients"][1]  # 這是字典格式的病患資料
+        
+        # 添加 CORS 標頭
+        response = jsonify(patients_data)   # 轉換成 JSON 字串
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+        response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+        
+        return response
+        
+    except FileNotFoundError:
+        return jsonify({"error": "資料檔案不存在"}), 404
+    except json.JSONDecodeError:
+        return jsonify({"error": "資料檔案格式錯誤"}), 500
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+        
+@app.route('/viewPatientsInfo', methods=['GET'])
+def viewPatientsInfo():
+    """HTML 版本：返回病患資料用於模板渲染"""
     with open("src/小型資料.json", "r", encoding="utf-8") as file:
         data = json.load(file)
     return jsonify(data["patients"][1])
-
-
 
 ###################### Flask + html ######################
 @app.route('/')
@@ -186,4 +210,4 @@ def newMedications():
     return render_template( "newMedications.html" )
 
 if __name__ == '__main__':
-    serve(app, host = "0.0.0.0", port = 8000)
+    serve(app, host = "0.0.0.0", port = 7999)
