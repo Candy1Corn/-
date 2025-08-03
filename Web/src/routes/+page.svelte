@@ -1,10 +1,17 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
+<h1>湯閣牙醫診所</h1>
+<h2>please choose an identity</h2>
 
-<h1>this it HOME！</h1>
-<p>please choose a rule</p>
-<ul>
-    <li><a href="/doctors">doctors</a></li>
-    <li><a href="/nurses">nurses</a></li>
-    <li><a href="/patients">patients</a></li>
-</ul>
+  <div class="identity">
+    <div><a href="/doctors">doctors</a></div>
+    <div><a href="/nurses">nurses</a></div>
+    <div><a href="/patients">patients</a></div>
+  </div>
+
+
+<style>
+    .identity {
+        /* display: flex; */
+        flex-direction: row;
+        justify-content:space-around;
+    }
+</style>

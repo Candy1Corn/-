@@ -32,7 +32,7 @@ CORS(app)  # 允許所有來源的跨域請求
 # Svelte 應用程式將會負責所有的畫面渲染。它會透過 HTTP 請求 (API calls) 從 Python 後端獲取資料，然後動態地在瀏覽器中建立使用者介面
 
 @app.route('/api/viewPatientsInfo', methods=['GET'])
-def api_view_patients_info():
+def api_view_patients_info():      # 可用
     """API 端點：返回所有病患資料"""
     try:
         with open("src/小型資料.json", "r", encoding="utf-8") as file:
@@ -57,7 +57,7 @@ def api_view_patients_info():
         return jsonify({"error": str(e)}), 500
 
 @app.route('/api/checkAppointmentInfo', methods=['GET'])
-def api_check_appointment_info():
+def api_check_appointment_info():      # 可用
     """API 端點：返回所有病患資料"""
     try:
         with open("src/小型資料.json", "r", encoding="utf-8") as file:
@@ -82,7 +82,7 @@ def api_check_appointment_info():
         return jsonify({"error": str(e)}), 500
 
 @app.route('/api/checkMedicationsInfo', methods=['GET'])
-def api_check_medications_info():
+def api_check_medications_info():      # 可用
     """API 端點：返回所有病患資料"""
     try:
         with open("src/小型資料.json", "r", encoding="utf-8") as file:
@@ -106,6 +106,115 @@ def api_check_medications_info():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route('/api/newMedications', methods = ['GET', 'POST'])
+def add_new_medications():
+    if request.method == 'POST':
+        medicationsName = request.form['medicationsName']
+        quantity = request.form['quantity']
+        threshold = request.form['threshold']
+        購入藥物(medicationsName, quantity, threshold)
+    return render_template( "newMedications.html" )
+
+@app.route('/api/patientsPay', methods=['GET'])
+def patients_pay():
+    patientID = request.args.get('patientID')
+    feedBack = 患者繳費(patientID)
+    return render_template( "patientsPay.html",
+                           oneSentence = feedBack)
+
+
+@app.route('/api/checkPrice', methods=['GET', 'POST'])
+def check_price():
+    # 醫生開藥與批價()
+    # return render_template( "checkPrice.html" )
+
+    if request.method == 'POST':
+        import time
+        with open("src/小型資料.json", "r", encoding="utf-8") as file:
+            data = json.load(file)
+
+        patientID = request.form['patientID']
+        description = request.form.get('description', "")
+        diagnosis = request.form['diagnosis']
+        result = request.form['result']
+        prescription = request.form.get('prescription', "")
+        cost = int(request.form['cost'])
+
+        messages = []
+
+        # 補充診斷資料
+        if description and description.strip():
+            data["patients"][1][patientID]["description"] += f"；新增補充：{description}"
+
+        data["patients"][1][patientID]["diagnosis"] = diagnosis
+        data["patients"][1][patientID]["result"] = result
+
+        # 處理開藥
+        used_drugs = []
+        if result == "開藥" and prescription:
+            if ", " in prescription:
+                used_drugs = prescription.split(", ")
+            else:
+                used_drugs = [prescription]
+
+            for drug in used_drugs:
+                if drug not in data["medications"][0]:
+                    data["medications"][0][drug] = {"stock": 0, "threshold": 10}
+                    messages.append(f"⚠ 新增藥品『{drug}』，請補貨")
+
+                # 檢查庫存
+                stock = data["medications"][0][drug]["stock"]
+                threshold = data["medications"][0][drug]["threshold"]
+                if stock <= threshold:
+                    messages.append(f"⚠ 藥品『{drug}』庫存緊張！目前數量：{stock}")
+                else:
+                    data["medications"][0][drug]["stock"] -= 1
+
+        data["patients"][1][patientID]["prescription"] = used_drugs if used_drugs else None
+
+        # 記錄費用
+        if patientID not in data["expenses"][0]:
+            data["expenses"][0][patientID] = {}
+        data["expenses"][0][patientID]["cost"] = cost
+        data["expenses"][0][patientID]["date"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+        data["expenses"][0][patientID]["type"] = result
+        data["expenses"][0][patientID]["paied"] = "未繳費"
+
+        with open("src/小型資料.json", "w", encoding="utf-8") as file:
+            json.dump(data, file, ensure_ascii=False, indent=4)
+
+        messages.append("批價與診斷紀錄已更新成功")
+        return render_template("checkPrice.html", oneSentence="；".join(messages))
+
+    return render_template("checkPrice.html")
+
+
+@app.route('/api/appointmentADocter', methods=['GET', 'POST'])
+def appoint_a_docter():       # 可用
+    if request.method == 'POST':
+        # doctorID = input("請輸入醫生ID: ")
+        # patientID = input("請輸入病人病歷號碼: ")
+        doctorID = request.form['doctorID']
+        patientID = request.form['patientID']
+        看診原因 = request.form['看診原因']
+        患者預約醫生與掛號(doctorID, patientID, 看診原因)
+    return render_template( "appointmentADocter.html" )
+
+@app.route('/api/newPatient', methods=['GET', 'POST'])      # 表單送資料用 POST => 有副作用：新增/修改
+def new_patient():       # 可用
+    if request.method == 'POST':
+        # name = input("請輸入病人姓名 : ")
+        # birth = input("請輸入病人生日 : ")
+        # phone = int(input("請輸入電話號碼 : "))
+        # address = input("請輸入地址 : ")
+        # description = input("是否有過敏史、家族史等等(直接填入或填無) : ")
+        name = request.form['name']     # 這邊藥用中括號不要用小花號！！！卡住好久！！！
+        birth = request.form['birth']
+        phone = int(request.form['phone'])
+        address = request.form['address']
+        description = request.form['description']
+        新患者登記(name, birth, phone, address, description)
+    return render_template( "newPatient.html" )
 
 ###################### Flask + html ######################
 @app.route('/')

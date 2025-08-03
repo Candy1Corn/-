@@ -1,12 +1,17 @@
+<script>
+    import { goto } from '$app/navigation';
+</script>
+
 <h1>Hi Nurses, here is Nurses' home page</h1>
 
-<button><a href="nurses/view_patients_info"> 查看患者資料 </a></button>
-<button><a href="nurses/view_medications_info"> 查看藥品資訊 </a></button>
-<button><a href="nurses/view_appointment_info"> 查看預約掛號狀況 </a></button>
-<button><a href="nurses/pay"> 收費、繳費 </a></button>
-<button><a href="nurses/check_price"> 查看付款資訊 </a></button>
-<button><a href="nurses/add_new_patient"> 新增患者病歷 </a></button>
-<button><a href="nurses/add_new_medications"> 新增藥品資訊 </a></button>
+<button onclick={() => goto('nurses/view_patients_info')}> 查看患者資料 </button>
+<button onclick={() => goto('nurses/view_medications_info')}> 查看藥品資訊 </button>
+<button onclick={() => goto('nurses/view_appointment_info')}> 查看預約掛號狀況 </button>
+<button onclick={() => goto('nurses/pay')}> 收費、繳費 </button>
+<button onclick={() => goto('nurses/check_price')}> 查看付款資訊 </button>
+<button onclick={() => goto('nurses/add_new_patient')}> 新增患者病歷 </button>
+<button onclick={() => goto('nurses/add_new_medications')}> 新增藥品資訊 </button>
+<button onclick={() => goto('doctors/add_new_appointment')}> 新增預約掛號 </button>
 
 <style>
     a {
@@ -15,5 +20,10 @@
     }
     button {
         margin: 10px;
+    }
+    button:hover{
+        cursor: pointer;
+        filter: drop-shadow(0 0 1em  #6291f7);
+        transition: all 0.2s ease-in-out
     }
 </style>
