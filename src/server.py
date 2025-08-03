@@ -55,13 +55,57 @@ def api_view_patients_info():
         return jsonify({"error": "資料檔案格式錯誤"}), 500
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@app.route('/api/checkAppointmentInfo', methods=['GET'])
+def api_check_appointment_info():
+    """API 端點：返回所有病患資料"""
+    try:
+        with open("src/小型資料.json", "r", encoding="utf-8") as file:
+            data = json.load(file)
         
-@app.route('/viewPatientsInfo', methods=['GET'])
-def viewPatientsInfo():
-    """HTML 版本：返回病患資料用於模板渲染"""
-    with open("src/小型資料.json", "r", encoding="utf-8") as file:
-        data = json.load(file)
-    return jsonify(data["patients"][1])
+        # 返回病患資料，注意數據結構
+        appointment_data = data["appointments"][0]  # 這是字典格式的病患資料
+        
+        # 添加 CORS 標頭
+        response = jsonify(appointment_data)   # 轉換成 JSON 字串
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+        response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+        
+        return response
+        
+    except FileNotFoundError:
+        return jsonify({"error": "資料檔案不存在"}), 404
+    except json.JSONDecodeError:
+        return jsonify({"error": "資料檔案格式錯誤"}), 500
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/checkMedicationsInfo', methods=['GET'])
+def api_check_medications_info():
+    """API 端點：返回所有病患資料"""
+    try:
+        with open("src/小型資料.json", "r", encoding="utf-8") as file:
+            data = json.load(file)
+        
+        # 返回病患資料，注意數據結構
+        medications_data = data["medications"][0]  # 這是字典格式的病患資料
+        
+        # 添加 CORS 標頭
+        response = jsonify(medications_data)   # 轉換成 JSON 字串
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+        response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+        
+        return response
+        
+    except FileNotFoundError:
+        return jsonify({"error": "資料檔案不存在"}), 404
+    except json.JSONDecodeError:
+        return jsonify({"error": "資料檔案格式錯誤"}), 500
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 ###################### Flask + html ######################
 @app.route('/')
