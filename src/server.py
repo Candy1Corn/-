@@ -20,7 +20,7 @@ import json
 # │       └── indexStyle.css
 # │       └── teeth.png
 
-            ##################### 加上 redirect() #################ˇew;r;ho lvucqnuoi32prewk;
+            ##################### 加上 redirect() ? #################ˇew;r;ho lvucqnuoi32prewk;
 
 
 app = Flask(__name__)     # 參照上方，所以，種是使用它的預設：一些html 檔案預設放在叫做template 的資料夾裡面
@@ -106,21 +106,44 @@ def api_check_medications_info():      # 可用
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@app.route('/api/newMedications', methods = ['GET', 'POST'])
-def add_new_medications():
-    if request.method == 'POST':
-        medicationsName = request.form['medicationsName']
-        quantity = request.form['quantity']
-        threshold = request.form['threshold']
-        購入藥物(medicationsName, quantity, threshold)
-    return render_template( "newMedications.html" )
 
 @app.route('/api/patientsPay', methods=['GET'])
-def patients_pay():
-    patientID = request.args.get('patientID')
-    feedBack = 患者繳費(patientID)
-    return render_template( "patientsPay.html",
-                           oneSentence = feedBack)
+def api_patients_pay():
+    try:
+        with open("src/小型資料.json", "r", encoding="utf-8") as file:
+            data = json.load(file)
+
+        patient_id = request.args.get('patientID')
+        expenses = data.get("expenses", [{}])[0]
+        patients = data.get("patients", [{}, {}])[1]
+
+        results = []
+        
+        # Helper function to create a patient payment entry
+        def create_entry(pid, expense_data, patient_info):
+            return {
+                "PatientID": pid,
+                "Name": patient_info.get("name", "N/A"),
+                "TotalAmount": expense_data.get("cost", 0),
+                "PaidAmount": 0,  # This field seems to be missing from the source data
+                "PaymentStatus": expense_data.get("paied", "未知")
+            }
+
+        # If a specific patientID is requested
+        if patient_id:
+            if patient_id in expenses and patient_id in patients:
+                results.append(create_entry(patient_id, expenses[patient_id], patients[patient_id]))
+        else: # If no patientID, return all
+            for pid, expense_data in expenses.items():
+                if pid in patients:
+                    results.append(create_entry(pid, expense_data, patients[pid]))
+
+        return jsonify(results)
+
+    except FileNotFoundError:
+        return jsonify({"error": "資料檔案不存在"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route('/api/checkPrice', methods=['GET', 'POST'])
@@ -189,7 +212,7 @@ def check_price():
     return render_template("checkPrice.html")
 
 
-@app.route('/api/appointmentADocter', methods=['GET', 'POST'])
+@app.route('/api/appointADocter', methods=['GET', 'POST'])
 def appoint_a_docter():       # 可用
     if request.method == 'POST':
         # doctorID = input("請輸入醫生ID: ")
@@ -199,6 +222,7 @@ def appoint_a_docter():       # 可用
         看診原因 = request.form['看診原因']
         患者預約醫生與掛號(doctorID, patientID, 看診原因)
     return render_template( "appointmentADocter.html" )
+
 
 @app.route('/api/newPatient', methods=['GET', 'POST'])      # 表單送資料用 POST => 有副作用：新增/修改
 def new_patient():       # 可用
@@ -215,6 +239,18 @@ def new_patient():       # 可用
         description = request.form['description']
         新患者登記(name, birth, phone, address, description)
     return render_template( "newPatient.html" )
+
+
+@app.route('/api/newMedications', methods = ['GET', 'POST'])
+def add_new_medications():
+    if request.method == 'POST':
+        medicationsName = request.form['medicationsName']
+        quantity = request.form['quantity']
+        threshold = request.form['threshold']
+        購入藥物(medicationsName, quantity, threshold)
+    return render_template( "newMedications.html" )
+
+
 
 ###################### Flask + html ######################
 @app.route('/')

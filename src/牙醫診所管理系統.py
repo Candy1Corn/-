@@ -116,10 +116,13 @@ def 患者繳費(patientID):     # 患者視角。如果繳費完成，繳費的
     elif data["expenses"][0][patientID]["paied"] != "未繳費":
         # oneSentence = ("病人 " + data["patients"][1][patientID] + "已經繳費，可以回家啦~~祝您身體早日恢復元氣!")
         oneSentence = "已經繳費，可以回家啦~~祝您身體早日恢復元氣!"
-    data["patients"][1][patientID]["paied"] = "已繳費"
-    data["expenses"][0][patientID]["paied"] = time.strftime("%Y-%m-%d %H:%M:%S")
-    with open(os.path.join(os.getcwd(), 'src/小型資料.json'), 'w', encoding='utf-8') as f:
-        json.dump(data, f, ensure_ascii=False, indent=4)
+    else:
+        beforePay = ("病人 " + data["patients"][1][patientID] + "未繳費，請繳" + data["expenses"][0][patientID]["cost"] + "元")
+        data["patients"][1][patientID]["paied"] = "已繳費"
+        data["expenses"][0][patientID]["paied"] = time.strftime("%Y-%m-%d %H:%M:%S")
+        with open(os.path.join(os.getcwd(), 'src/小型資料.json'), 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=4)
+            oneSentence = "已經繳費，可以回家啦~~祝您身體早日恢復元氣!"
     return oneSentence
 
 def 檢查藥品庫存():     # 檢查藥品庫存，如果低於10，就會警告低於10
