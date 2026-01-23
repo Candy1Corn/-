@@ -148,20 +148,52 @@ def api_patients_pay():
 
 @app.route('/api/checkPrice', methods=['GET', 'POST'])
 def check_price():
-    # 醫生開藥與批價()
-    # return render_template( "checkPrice.html" )
+    """
+    API for checking and submitting prices.
+    GET: Returns a list of all patient expenses.
+    POST: Submits a new diagnosis and price.
+    """
+    if request.method == 'GET':
+        try:
+            with open("src/小型資料.json", "r", encoding="utf-8") as file:
+                data = json.load(file)
+            
+            expenses_data = data.get("expenses", [{}])[0]
+            patients_data = data.get("patients", [{}, {}])[1]
+
+            price_list = []
+            for patient_id, expense_details in expenses_data.items():
+                patient_info = patients_data.get(patient_id, {})
+                price_list.append({
+                    "patientID": patient_id,
+                    "name": patient_info.get("name", "N/A"),
+                    "cost": expense_details.get("cost", 0),
+                    "type": expense_details.get("type", "N/A"),
+                    "date": expense_details.get("date", "N/A"),
+                    "paid": expense_details.get("paied", "未繳費")
+                })
+            
+            return jsonify(price_list)
+
+        except FileNotFoundError:
+            return jsonify({"error": "資料檔案不存在"}), 404
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
 
     if request.method == 'POST':
         import time
         with open("src/小型資料.json", "r", encoding="utf-8") as file:
             data = json.load(file)
 
-        patientID = request.form['patientID']
-        description = request.form.get('description', "")
-        diagnosis = request.form['diagnosis']
-        result = request.form['result']
-        prescription = request.form.get('prescription', "")
-        cost = int(request.form['cost'])
+        # 從 JSON body 獲取數據，而不是 form
+        post_data = request.get_json()
+
+        patientID = post_data['patientID']
+        description = post_data.get('description', "")
+        diagnosis = post_data['diagnosis']
+        result = post_data['result']
+        prescription = post_data.get('prescription', "")
+        cost = int(post_data['cost'])
 
         messages = []
 
@@ -185,7 +217,6 @@ def check_price():
                     data["medications"][0][drug] = {"stock": 0, "threshold": 10}
                     messages.append(f"⚠ 新增藥品『{drug}』，請補貨")
 
-                # 檢查庫存
                 stock = data["medications"][0][drug]["stock"]
                 threshold = data["medications"][0][drug]["threshold"]
                 if stock <= threshold:
@@ -207,9 +238,7 @@ def check_price():
             json.dump(data, file, ensure_ascii=False, indent=4)
 
         messages.append("批價與診斷紀錄已更新成功")
-        return render_template("checkPrice.html", oneSentence="；".join(messages))
-
-    return render_template("checkPrice.html")
+        return jsonify({"status": "success", "messages": messages}), 200
 
 
 @app.route('/api/appointADocter', methods=['GET', 'POST'])
