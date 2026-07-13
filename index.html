@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body {
+  width: 100%; height: 100%;
+  background: transparent;
+  overflow: hidden;
+  -webkit-user-select: none;
+}
+
+#stage {
+  position: relative;
+  width: 100%; height: 100%;
+}
+
+/* The pet canvas — positioned bottom-right of stage */
+#pet {
+  position: absolute;
+  bottom: 0;
+  left: 80px;          /* offset so bubble has left room */
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  cursor: grab;
+}
+#pet:active { cursor: grabbing; }
+
+/* Speech bubble */
+#bubble {
+  position: absolute;
+  bottom: 138px;       /* above the pet */
+  left: 0px;
+  background: rgba(255,255,255,0.97);
+  border: 1.5px solid #d0c0b0;
+  border-radius: 12px;
+  padding: 5px 11px;
+  font-family: -apple-system, "Segoe UI", sans-serif;
+  font-size: 13px;
+  color: #444;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  max-width: 220px;
+  white-space: normal;
+}
+#bubble.show { opacity: 1; }
+#bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 20px;
+  width: 10px; height: 10px;
+  background: rgba(255,255,255,0.97);
+  border-right: 1.5px solid #d0c0b0;
+  border-bottom: 1.5px solid #d0c0b0;
+  transform: rotate(45deg);
+}
+
+/* Right-click context menu */
+#menu {
+  display: none;
+  position: fixed;
+  background: rgba(255,255,255,0.97);
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 5px;
+  font-family: -apple-system, "Segoe UI", sans-serif;
+  font-size: 13px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+  z-index: 999;
+  min-width: 140px;
+}
+.mi {
+  padding: 7px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #333;
+}
+.mi:hover { background: #f5f0eb; }
+.sep { height: 1px; background: #eee; margin: 4px 0; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="bubble"></div>
+  <canvas id="pet"></canvas>
+</div>
+
+<div id="menu">
+  <div class="mi" id="m-jump">跳起來 🐾</div>
+  <div class="mi" id="m-wave">打招呼 👋</div>
+  <div class="mi" id="m-sleep">休息一下 💤</div>
+  <div class="sep"></div>
+  <div class="mi" id="m-close" style="color:#c44">結束桌寵</div>
+</div>
+
+<script>
+// ─── Sprite config ────────────────────────────────────────────
+// xiaoyuan.png: 128×192, 4 cols × 6 rows, each frame 32×32
+// Row 0: idle   Row 1: walk_a  Row 2: walk_b
+// Row 3: jump   Row 4: wave    Row 5: sleep
+const SW = 32, SH = 32;
+const SCALE = 4;
+const D = SW * SCALE;   // 128px display
+
+const ANIMS = {
+  idle:   [[0,0],[1,0],[0,0],[1,0]],
+  walk_a: [[0,1],[1,1],[2,1],[3,1]],
+  walk_b: [[0,2],[1,2],[2,2],[3,2]],
+  jump:   [[0,3],[1,3],[2,3],[3,3]],
+  wave:   [[0,4],[1,4],[2,4],[3,4]],
+  sleep:  [[0,5],[1,5],[2,5],[3,5]],
+};
+
+// ─── Canvas setup ────────────────────────────────────────────
+const canvas = document.getElementById('pet');
+canvas.width  = D;
+canvas.height = D;
+const ctx = canvas.getContext('2d');
+ctx.imageSmoothingEnabled = false;
+
+const img = new Image();
+img.src = 'xiaoyuan.png';
+
+// ─── State ───────────────────────────────────────────────────
+let state = 'idle';
+let animKey = 'idle';
+let animFrame = 0;
+let animTick = 0;
+let stateTimer = 80;
+let facing = 1;           // 1=right, -1=left
+
+let isJumping = false;
+let jumpY = 0, jumpVY = 0;
+
+let isSleeping = false;
+let isWaving   = false;
+let waveTick   = 0;
+
+let targetX = -1;         // screen X to walk toward
+let screenW = 1920, screenH = 1080;
+let winX = 0, winY = 0;
+let winSize = 128;
+
+let bubbleTimer = 0;
+let isDragging  = false;
+let lastMouseX  = 0, lastMouseY = 0;
+
+const WALK_SPEED = 1.8;   // px per physics tick
+const ANIM_FPS   = 8;
+const PHYS_FPS   = 60;
+let lastAnim = 0, lastPhys = 0;
+
+// ─── Bubble ──────────────────────────────────────────────────
+const bubbleEl = document.getElementById('bubble');
+function bubble(text, ms = 2800) {
+  bubbleEl.textContent = text;
+  bubbleEl.classList.add('show');
+  bubbleTimer = ms;
+}
+function hideBubble() {
+  bubbleEl.classList.remove('show');
+  bubbleTimer = 0;
+}
+
+// ─── Context menu ────────────────────────────────────────────
+const menu = document.getElementById('menu');
+function showMenu(x, y) {
+  menu.style.left = x + 'px';
+  menu.style.top  = y + 'px';
+  menu.style.display = 'block';
+  window.pet.mouseIgnore(false);
+}
+function hideMenu() { menu.style.display = 'none'; }
+
+document.getElementById('m-jump').onclick  = () => { hideMenu(); doJump(); };
+document.getElementById('m-wave').onclick  = () => { hideMenu(); doWave(); };
+document.getElementById('m-sleep').onclick = () => { hideMenu(); toggleSleep(); };
+document.getElementById('m-close').onclick = () => window.close();
+
+canvas.addEventListener('contextmenu', e => {
+  e.preventDefault();
+  showMenu(e.clientX, e.clientY);
+});
+document.addEventListener('click', hideMenu);
+
+// ─── Interactions ────────────────────────────────────────────
+function doJump() {
+  if (isSleeping || isJumping) return;
+  isJumping = true;
+  jumpVY = 9;
+  animKey = 'jump';
+  const msgs = ['嗚嗚嗚～', 'wheee！', '跳高高！', 'やっほー！元気だよ！'];
+  bubble(msgs[Math.floor(Math.random() * msgs.length)]);
+}
+
+function doWave() {
+  if (isSleeping) return;
+  isWaving = true;
+  waveTick = 0;
+  animKey = 'wave';
+  stateTimer = 64;
+  const msgs = ['你好你好！(^ω^)/', '哈囉～', 'Hello！', '嗨嗨～'];
+  bubble(msgs[Math.floor(Math.random() * msgs.length)]);
+}
+
+function toggleSleep() {
+  isSleeping = !isSleeping;
+  if (isSleeping) {
+    isWaving = false;
+    state = 'sleeping';
+    animKey = 'sleep';
+    bubble('zzz... 💤', 99999);
+  } else {
+    state = 'idle';
+    animKey = 'idle';
+    stateTimer = 60;
+    bubble('不讓我睡！>_<', 2000);
+  }
+}
+
+// Click on pet = react
+canvas.addEventListener('click', e => {
+  if (isSleeping) {
+    toggleSleep();
+    return;
+  }
+  const reactions = ['嗯嗯 (o‿o)', '你好！', '(^ω^)', '~mew~', 'OwO', '(＊´▽｀＊)'];
+  bubble(reactions[Math.floor(Math.random() * reactions.length)]);
+  doJump();
+});
+
+// Drag to reposition
+canvas.addEventListener('mousedown', e => {
+  if (e.button !== 0) return;
+  isDragging = true;
+  lastMouseX = e.screenX;
+  lastMouseY = e.screenY;
+  window.pet.mouseIgnore(false);
+  e.preventDefault();
+});
+document.addEventListener('mousemove', e => {
+  if (!isDragging) return;
+  const dx = e.screenX - lastMouseX;
+  const dy = e.screenY - lastMouseY;
+  lastMouseX = e.screenX;
+  lastMouseY = e.screenY;
+  window.pet.moveBy(dx, dy);
+});
+document.addEventListener('mouseup', () => {
+  if (isDragging) {
+    isDragging = false;
+    state = 'idle'; animKey = 'idle'; stateTimer = 40;
+  }
+});
+
+// Mouse hover: enable click, leave: pass-through
+canvas.addEventListener('mouseenter', () => { if (!isDragging) window.pet.mouseIgnore(false); });
+canvas.addEventListener('mouseleave', () => { if (!isDragging) window.pet.mouseIgnore(true); });
+
+// ─── AI behaviour ────────────────────────────────────────────
+function pickBehaviour() {
+  if (isSleeping) return;
+  const r = Math.random();
+  if (r < 0.45) {
+    // Walk somewhere random on screen
+    const margin = winSize + 20;
+    targetX = Math.random() * (screenW - margin);
+    facing  = targetX > winX ? 1 : -1;
+    state   = 'walking';
+    animKey = facing > 0 ? 'walk_a' : 'walk_b';
+  } else if (r < 0.60) {
+    doWave();
+    const thinks = ['好無聊...', '今天天氣真好～', '在想什麼呢...', '(＊´∀｀)♪'];
+    bubble(thinks[Math.floor(Math.random() * thinks.length)]);
+  } else if (r < 0.70) {
+    doJump();
+  } else {
+    state = 'idle';
+    animKey = 'idle';
+    stateTimer = 80 + Math.floor(Math.random() * 120);
+  }
+}
+
+// ─── Physics (60fps) ─────────────────────────────────────────
+function physUpdate(now) {
+  if (now - lastPhys < 1000 / PHYS_FPS) return;
+  const dt = now - lastPhys;
+  lastPhys = now;
+
+  // Bubble countdown
+  if (bubbleTimer > 0) {
+    bubbleTimer -= dt;
+    if (bubbleTimer <= 0) hideBubble();
+  }
+
+  if (isDragging || isSleeping) return;
+
+  // Jump arc
+  if (isJumping) {
+    jumpY  += jumpVY;
+    jumpVY -= 0.85;
+    if (jumpY <= 0) {
+      jumpY = 0; jumpVY = 0; isJumping = false;
+      state = 'idle'; animKey = 'idle'; stateTimer = 30;
+    }
+  }
+
+  // Walk toward target
+  if (state === 'walking' && targetX >= 0) {
+    const dx = targetX - winX;
+    const step = Math.min(WALK_SPEED, Math.abs(dx));
+    winX += Math.sign(dx) * step;
+    window.pet.moveTo(Math.round(winX), Math.round(winY));
+    if (Math.abs(dx) < WALK_SPEED + 1) {
+      targetX = -1;
+      state = 'idle'; animKey = 'idle';
+      stateTimer = 60 + Math.floor(Math.random() * 80);
+    }
+  }
+
+  // Idle countdown → new behaviour
+  if ((state === 'idle' || state === 'waving') && !isWaving && !isJumping) {
+    stateTimer--;
+    if (stateTimer <= 0) pickBehaviour();
+  }
+
+  // Wave timer
+  if (isWaving) {
+    waveTick++;
+    if (waveTick > 64) {
+      isWaving = false;
+      state = 'idle'; animKey = 'idle'; stateTimer = 50;
+    }
+  }
+}
+
+// ─── Animation (8fps) ────────────────────────────────────────
+function animUpdate(now) {
+  if (now - lastAnim < 1000 / ANIM_FPS) return;
+  lastAnim = now;
+  animTick++;
+  const frames = ANIMS[animKey] || ANIMS.idle;
+  animFrame = animTick % frames.length;
+}
+
+// ─── Render ──────────────────────────────────────────────────
+function render() {
+  ctx.clearRect(0, 0, D, D);
+
+  const frames = ANIMS[animKey] || ANIMS.idle;
+  const [col, row] = frames[animFrame % frames.length];
+
+  const jOffset = isJumping ? -Math.round(jumpY) : 0;
+
+  ctx.save();
+  if (facing < 0) {
+    ctx.translate(D, 0);
+    ctx.scale(-1, 1);
+  }
+  ctx.drawImage(img, col * SW, row * SH, SW, SH, 0, jOffset, D, D);
+  ctx.restore();
+
+  // Shadow under feet when jumping
+  if (isJumping && jumpY > 2) {
+    const s = Math.max(0.3, 1 - jumpY / 40);
+    ctx.globalAlpha = 0.25 * s;
+    ctx.fillStyle = '#000';
+    ctx.beginPath();
+    ctx.ellipse(D/2, D - 4, D * 0.3 * s, 5 * s, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+}
+
+// ─── Main loop ───────────────────────────────────────────────
+function loop(now) {
+  physUpdate(now);
+  animUpdate(now);
+  render();
+  requestAnimationFrame(loop);
+}
+
+async function init() {
+  const s = await window.pet.getState();
+  screenW = s.sw;
+  screenH = s.sh;
+  winX = s.x;
+  winY = s.y;
+  winSize = s.winSize;
+
+  // Start walking to center
+  targetX = screenW * 0.4;
+  facing = 1;
+  state = 'walking';
+  animKey = 'walk_a';
+
+  window.pet.mouseIgnore(true);
+  requestAnimationFrame(loop);
+
+  setTimeout(() => bubble('我來了！(≧▽≦)', 2800), 900);
+}
+
+img.onload = init;
+img.onerror = () => {
+  ctx.fillStyle = '#D47858';
+  ctx.fillRect(10, 10, D-20, D-20);
+  console.error('Cannot load xiaoyuan.png');
+};
+</script>
+</body>
+</html>
