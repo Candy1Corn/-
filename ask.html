@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>顯示書籍資料</title>
+</head>
+<body>
+
+    <h1>書籍資料列表</h1>
+    <ul id="book-list"></ul>
+    
+    <h2>搜尋書本</h2>
+    <input type="text" id="searchBook" placeholder="輸入書名">
+    <button onclick="findBook()">查詢</button>
+    <div id="book-details"></div>
+
+    <script>
+        // 假設我們用 fetch 獲取 books.json 檔案內容
+        let books = [];
+        
+        // 模擬 fetch 後的 JSON 資料，手動將其存入 books 變數中
+        books = [
+            {
+                "name": "飛狐外傳",
+                "author": "金庸",
+                "ID": 1,
+                "state": [
+                    "未借出",
+                    "無",
+                    0,
+                    0
+                ]
+            },
+            {
+                "name": "雪山飛狐",
+                "author": "金庸",
+                "ID": 2,
+                "state": [
+                    "未借出",
+                    "無",
+                    0,
+                    0
+                ]
+            }
+        ];
+
+        // 逐個取出並顯示每本書的詳細資料
+        function displayBooks() {
+            const bookList = document.getElementById('book-list');
+            books.forEach(book => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `書名: ${book.name}, 作者: ${book.author}, 狀態: ${book.state[0]}`;
+                bookList.appendChild(listItem);
+            });
+        }
+        //下面這個是不行的
+        function ReadSmallData(MessageID){
+                //const iMSmallData = document.getElementById('book-list');
+                fetch("iMSmallData.json").then((res) => {
+                    if (!res.ok) {
+                        throw new Error
+                            (`HTTP error! Status: ${res.status}`);
+                    }
+                    return res.json();
+                })
+                .then(iMSmallData => {
+                const iMSmallDataMessage = document.getElementById(MessageID);
+                iMSmallDataMessage.textContent = `Name: ${iMSmallData.name}, avatar: ${iMSmallData.age}, major: ${iMSmallData.city}`;
+                iMSmallDataMessage.style.color = "White";
+            })
+            }
+
+
+        // 根據書名查找書籍
+        function findBook() {
+            const searchBookName = document.getElementById('searchBook').value;
+            const bookDetails = document.getElementById('book-details');
+            const foundBook = books.find(book => book.name === searchBookName);
+
+            if (foundBook) {
+                bookDetails.innerHTML = `
+                    <p>書名: ${foundBook.name}</p>
+                    <p>作者: ${foundBook.author}</p>
+                    <p>狀態: ${foundBook.state[0]}</p>
+                    <p>借書人: ${foundBook.state[1]}</p>
+                    <p>ID: ${foundBook.ID}</p>
+                `;
+            } else {
+                bookDetails.textContent = '找不到該書籍';
+            }
+        }
+
+        // 初始化時顯示所有書籍
+        displayBooks();
+    </script>
+
+</body>
+</html>

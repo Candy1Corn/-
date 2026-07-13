@@ -1,0 +1,119 @@
+<html>
+
+    <head>
+        <meta charset="UTF-8">
+        <title>View NCUHOME iM</title>
+        <link rel="stylesheet" href="iMPageStyle.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+
+    <body background = "C2iMBG.gif">
+        
+            <div class="PageTopicStyle" style="text-align:center;"><h2>NCU HOME iM</h2></div>
+
+            <div class="iMChatTopicStyle" style="text-align:center;"><h2>iM Chat</h2></div>
+
+            <div class="iMChatAreaStyle" style="text-align:center;"><h2>iM Chat 施工中</h2></div>
+
+            <div alt class="SearchBoxStyle">
+                <div style="text-align:center;"><input type="text" id="SearchInputBox" name="SearchingFor" style="height:30px;width:250px;" placeholder="  search" ></div>
+                <p><div style="text-align:end;"><input type="button" id="SearchButton" style="height:45px;width:45px" value=" ═⫸" onclick="ReadSmallData()"><br></div>
+                <div class="BackToLoginStyle" style="text-align:end;"><input type="button" id="LogoutButton" style="height:45px;width:45px" value="⫷═ " onclick="logout()"><br></div>
+            </div>
+
+            <div class="ShowDataBoxStyle">
+                <div style="text-align:left;"><input type="button" id="HomePageButton" style="height:40px;width:40px;border-radius: 50px;" value="⫷═ " onclick="BackToHomePage()"><br></div>
+                <img id="UserLogo" width="50" hight="50" loading="lazy" role="presentation" src= ""><p id="SearchBoxFeedback" style="height:250px;width:500px;text-align:left;"></p></p>
+            </div>
+
+            <hr><p></p></hr>
+
+            
+
+        <script>
+            
+            let iMUsers = [];
+            var messageElement = document.getElementById("SearchBoxFeedback");
+            //var FeadBsckButton = document.getElementById("SearchBoxFeedbackButton");
+            let LogoPicture = document.getElementById("UserLogo");
+            
+            function ReadSmallData() {
+                var messageElement = document.getElementById("SearchBoxFeedback");
+                var KeyWord = document.getElementById("SearchInputBox").value;
+
+                console.log("按鈕被按了一下");
+                fetch('iMSmallData.json')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('HTTP error ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(iMUsers => {
+                    var UserYouSearch = iMUsers.filter(WhatInSearchBox => WhatInSearchBox.name === KeyWord)
+                    if (UserYouSearch.length > 0){
+                        UserYouSearch.forEach(FoundUser => {
+                            //messageElement.textContent = `${FoundUser.name}\n ${FoundUser.avatar}\n ${FoundUser.major}\n  ${(FoundUser.posts[0])} \n ${(FoundUser.posts[1])} \n ${(FoundUser.posts[2])} \n ${(FoundUser.posts[3]).length}"人都說讚"`; 
+                            messageElement.textContent = "";
+                            messageElement.textContent = `${FoundUser.avatar}\n\n ${(FoundUser.posts[0])} \n ${(FoundUser.posts[1])} \n ${(FoundUser.posts[2])} \n\n\n ${(FoundUser.posts[3]).length}人都說讚`; 
+                            messageElement.style.color = "White";
+                            //FeadBsckButton.value = `${FoundUser.avatar}\n\n ${(FoundUser.posts[0])} \t ${(FoundUser.posts[3]).length}人都說讚`; 
+                            LogoPicture.src = `${FoundUser.logo}`
+                        });
+                    } else {
+                        messageElement.textContent = "";
+                        messageElement.textContent = "沒找到"+KeyWord+"，是不是打錯字呢";
+                        messageElement.style.color = "White";
+                        LogoPicture.src = 'CannotFindTheUser.jpg';
+                    }
+                })
+                .catch(error => {
+                console.error('讀取 JSON 檔案出錯:', error);
+                });
+            }
+            
+            function boxChoice(choice, rId, button) {
+                var buttons = document.getElementsByName(button.name);
+                for (var i = 0; i < buttons.length; i++) {
+                    buttons[i].style.borderColor = "red";
+                }
+                button.style.borderColor = "green";
+            }
+            
+            function logout(){
+                window.location.href = "NCUHOME iM Login.html";
+            }
+
+            function BackToHomePage(){
+                window.location.href = "NCUHOME iM HomePage.html";
+            }
+
+    fetch("iMSmallData.json")
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('HTTP error ' + response.status);
+            }
+            return response.json();
+        })
+        .then(data => {
+            iMUsers = data; console.log(iMUsers); console.log(data);
+            const randomIndex = Math.floor(Math.random() * iMUsers.length);
+            const randomUser = iMUsers[randomIndex];
+            console.log("33333" + randomUser.name);
+            messageElement.textContent = "";
+            messageElement.textContent = ` ${randomUser.avatar}\n\n  ${(randomUser.posts[0])} \n   ${(randomUser.posts[1])} \n   ${(randomUser.posts[2])} \n\n\n   ${(randomUser.posts[3]).length}人都說讚`; 
+            messageElement.style.color = "White";
+            //FeadBsckButton.value = `${randomUser.avatar}\n ${(randomUser.posts[0])} \t\t ${(randomUser.posts[3]).length}人都說讚`; 
+            LogoPicture.src = `${randomUser.logo}`
+        })
+        .catch(error => {
+            console.error('Error fetching JSON data:', error);
+        });
+
+////////////////做一個像培訓內容的名片一樣的東西，
+
+        </script>
+
+    </body>
+
+</html>

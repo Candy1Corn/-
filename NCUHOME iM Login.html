@@ -1,0 +1,63 @@
+<html></html>
+
+    <head>
+        <meta charset="UTF-8">
+        <title>Login NCUHOME iM</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+
+    <body>
+        <style type="text/css"></style>
+        <body background = "C2iMBG.gif">
+        <form action="" class="login">
+            <div style="text-align:center;"><h2>NCU HOME iM</h2></div>
+            <div style="text-align:center;"><h3><br>微仿</h3></div><hr>
+
+            <p><div style="text-align: center;"> 請填入用戶暱稱或電子郵件</div></p>
+            <div style="text-align:center;"><input type="text" id="InputUserID" name="userID" style="height:30px;width:250px;" placeholder="  ID" onclick="boxChoice(1, 'InputUserID', this)"></div>
+            <h4></h4>
+            <p><div style="text-align: center;"> 請輸入密碼</div></p>
+            <div style="text-align:center;"><input type="password" id="InputUserPWS" name="userPWS" style="height:30px;width:250px;" placeholder=" passworld" onclick="boxChoice(2, 'InputUserPWS', this)"></div>
+            <h4></h4>
+            <div style="text-align:center;"><input type="button" id="LoginButton" style="height:35px;width:90px" value="登錄" onclick="login()"><br></div>
+            <div style="text-align: center;"><p id="message"></p></div>
+            <hr><p></p></hr>
+            <div style="text-align:center;"><input type="button" id="SighinButton" style="height:30px;width:50px" value="註冊" onclick="signin()"></div>
+        </form> 
+
+        <script src="https://smtpjs.com/v3/smtp.js"></script>
+        <script type="text/javascript">
+
+            function login() {
+                var SID = "Paff";
+                var SPWS = "Who Am I...";
+                var InputID = document.getElementById("InputUserID").value;
+                var InputPWS = document.getElementById("InputUserPWS").value;
+                var messageElement = document.getElementById("message");
+                if (InputID === SID && InputPWS === SPWS) {
+                    messageElement.textContent = "登入成功！";
+                    messageElement.style.color = "blue";
+                    window.location.href = "NCUHOME iM HomePage.html";
+                } else {
+                    messageElement.textContent = "帳號或密碼錯誤";
+                    messageElement.style.color = "red";
+                }
+            }
+
+            function signin() {
+                window.location.href = "NCUHOME iM Sigin.html";
+            }
+
+            function boxChoice(choice, rId, button) {
+                var buttons = document.getElementsByName(button.name);
+                for (var i = 0; i < buttons.length; i++) {
+                    buttons[i].style.borderColor = "red";
+                }
+                button.style.borderColor = "green";
+            }
+
+        </script>
+
+    </body>
+
+</html>

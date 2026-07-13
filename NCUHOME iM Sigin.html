@@ -1,0 +1,93 @@
+<html>
+    
+    <head>
+        <meta charset="UTF-8">
+        <title>Sign NCUHOME iM</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+
+    <body>
+        <style type="text/css"></style>
+        <body background = "C2iMBG.gif">
+        <form action="" class="login">
+            <div style="text-align:center;"><h2>NCU HOME iM</h2></div>
+            <div style="text-align:center;"><h3><br>微仿</h3></div><hr>
+
+            <p><div style="text-align: center;"> 請輸入暱稱 </div></p>
+            <div style="text-align:center;"><input type="text" id="InputUserPetName" name="userPetName" style="height:30px;width:250px;" placeholder="  mail" onclick="boxChoice(1, 'un', this)"></div>
+            <p><div style="text-align: center;"> 請填入帳號或電子郵件（必填）</div></p>
+            <div style="text-align:center;"><input type="text" id="InputUserID" name="userID" style="height:30px;width:250px;" placeholder="  mail" onclick="boxChoice(1, 'un', this)"></div>
+            <h4></h4>
+            <p><div style="text-align: center;"> 請輸入密碼（必填）</div></p>
+            <div style="text-align:center;"><input type="password" id="InputUserPWS1" name="userPWS1" style="height:30px;width:250px;" placeholder=" passworld" onclick="boxChoice(2, 'un', this)"></div>
+            <h4></h4>
+            <p><div style="text-align: center;"> 請確認密碼（必填）</div></p>
+            <div style="text-align:center;"><input type="password" id="InputUserPWS2" name="userPWS2" style="height:30px;width:250px;" placeholder=" passworld" onclick="boxChoice(3, 'un', this)"></div>
+            <h4></h4>
+            <div style="text-align:center;"><input type="button" id="SigninButton" style="height:35px;width:90px" value="註冊" onclick="signin()"><br></div>
+            <div style="text-align: center;"><p id="message"></p></div>
+            <hr><p></p></hr>
+            <div style="text-align:center;"><input type="button" id="LoginBytton" style="height:30px;width:50px" value="登錄" onclick="login()"><br></div>
+        </form>
+
+
+
+        
+        <script src="https://smtpjs.com/v3/smtp.js"></script>
+        <script type="text/javascript">
+
+            function signin() {
+                //var InputPWS1 = document.getElementById("InputUserPWS1").value;
+                //var InputPWS2 = document.getElementById("InputUserPWS2").value;
+                //var messageElement = document.getElementById("message");
+                var InputID = document.getElementById("InputUserID").value;
+                var InputPWS1 = document.getElementById("InputUserPWS1").value;
+                var InputPWS2 = document.getElementById("InputUserPWS2").value;
+                var messageElement = document.getElementById("message");
+                var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+
+                //範例密碼 : a4 tt0 n9y[v3 ]
+                //範例密碼 : q=234045$#Q
+                //範例密碼 : q234045Q
+
+                if (!emailRegex.test(InputID)) {
+                    messageElement.textContent = "帳號格式無效，請輸入有效的電子郵件";
+                    messageElement.style.color = "red";
+                    return;
+                }
+                
+                if (!passwordRegex.test(InputPWS1)) {
+                    messageElement.textContent = "新密碼務必至少八位、大小寫字母和數字";
+                    messageElement.style.color = "red";
+                    return;
+                }
+                
+                if (InputPWS1 === InputPWS2) {
+                    messageElement.textContent = "註冊成功！請再次登入";
+                    messageElement.style.color = "blue";
+                    window.location.href = "NCUHOME iM Login.html";
+                } else {
+                    messageElement.textContent = "兩次密碼不同";
+                    messageElement.style.color = "red";
+                }
+                
+            }
+
+            function login() {
+                window.location.href = "NCUHOME iM Login.html";
+            }
+
+            function boxChoice(choice, rId, button) {
+                var buttons = document.getElementsByName(button.name);
+                for (var i = 0; i < buttons.length; i++) {
+                    buttons[i].style.borderColor = "red";
+                }
+                button.style.borderColor = "green";
+            }
+
+        </script>
+
+    </body>
+
+</html>

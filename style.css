@@ -1,0 +1,25 @@
+body{
+    font-family: Roboto;
+    background-size:100cap;
+    display:grid;
+    align-items: center;
+    justify-items: center;
+}
+
+.login {
+    background-attachment: fixed;
+    background-color:rgba(218, 238, 245, 0.3) ;
+    backdrop-filter: blur(20px);
+    border-radius: 5px;
+    border-color:aqua;
+    width: 800px;
+    white-space:inherit;
+    color:rgb(228, 248, 248);
+    padding: 50px;
+}
+
+.login input{
+    background-color:rgba(218, 238, 245, 0.3);
+    border-radius: 10px;
+    border-color:cornflowerblue;
+}

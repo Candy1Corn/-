@@ -1,0 +1,148 @@
+body {
+    font-family: Roboto;
+    background-size: 140cqb;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+
+
+.PageTopicStyle {
+    position: fixed;
+    top: 30px;
+    left: 30px;
+    background-attachment:fixed;
+    background-color:rgba(218, 238, 245, 0.3);
+    backdrop-filter: blur(20px);
+    border-radius: 5px;
+    border-color:aqua;
+    width: 200px;
+    white-space:inherit;
+    color:rgb(25, 197, 255);
+    padding: 0px;
+}
+.PageTopicStyle input{
+    border-radius: 5px;
+    background-color:rgba(255, 255, 255, 0.3);
+    border-color:rgba(240, 242, 245, 0);
+    color:rgb(228, 248, 248);
+}
+
+
+.iMLogo input{
+    border-radius: 5px;
+    background-color:rgba(255, 255, 255, 0.3);
+    border-color:rgba(240, 242, 245, 0);
+    color:rgb(228, 248, 248);
+}
+
+
+
+.iMChatTopicStyle{
+    width: 200px;
+    height: 65px;
+    position: fixed;
+    top: 45px;
+    left: 1200px;
+    background-attachment:fixed;
+    background-color:rgba(218, 238, 245, 0.3);
+    backdrop-filter: blur(20px);
+    border-radius: 5px;
+    border-color:aqua;
+    width: 200px;
+    white-space:inherit;
+    color:rgb(25, 197, 255);
+    padding: 0px;
+}
+
+.iMChatAreaStyle{
+    width: px;
+    height: 70px;
+    position: fixed;
+    top: 140px;
+    left: 1200px;
+    background-attachment:fixed;
+    background-color:rgba(218, 238, 245, 0.3);
+    backdrop-filter: blur(20px);
+    border-radius: 5px;
+    border-color:aqua;
+    width: 200px;
+    white-space:inherit;
+    color:rgb(25, 197, 255);
+    padding: 0px;
+}
+
+
+
+
+.SearchBoxStyle {
+    width: 200px;
+    height: 30px;
+    position: fixed;
+    top: 150px;
+    left: 700px;
+    backdrop-filter: blur(20px);
+    background-color:rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    border-color:rgba(105, 150, 236, 0.4);
+    width: 250px;
+    padding: 5px;
+}
+.SearchBoxStyle input{
+    background-color:rgba(255, 255, 255, 0.3);
+    border-radius: 500px;
+    border-color:rgba(105, 150, 236, 0.7);
+    color:rgb(228, 248, 248);
+}
+
+
+
+.ShowDataBoxStyle {
+    width: 180px;
+    height: 375px;
+    position: relative;
+    bottom: 50px;
+    left: 50;
+    background-attachment: fixed;
+    background-color:rgba(218, 238, 245, 0.3);
+    border-radius: 5px;
+    width: 800px;
+    color:rgb(228, 248, 248);
+    padding: 25px;
+    white-space: pre-line;
+}
+.ShowDataBoxStyle input{
+    border-radius: 5px;
+    background-color:rgba(255, 255, 255, 0.3);
+    border-color:rgba(240, 242, 245, 0);
+    color:rgb(228, 248, 248);
+}
+.ShowDataBoxStyle img{
+    position: relative;
+    top: 10px;
+    left: 75;
+    border-radius: 400px;
+}
+.ShowDataBoxStyle p{
+    position: relative;
+    top: 10px;
+    left: 75;
+    padding-left:75px;
+    border-radius: 400px;
+}
+
+
+
+.BackToLoginStyle input{
+    position: relative;
+    top: 400;
+    left: 0;
+    background-color:rgba(255, 255, 255, 0.3);
+    border-radius: 500px;
+    border-color:rgba(240, 242, 245, 0.9);
+    color:rgb(228, 248, 248);
+}
