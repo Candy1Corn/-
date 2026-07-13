@@ -1,0 +1,62 @@
+#root {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: center;
+}
+
+.logo {
+    height: 3em;
+    padding: 1.5em;
+    will-change: filter;
+    transition: filter 300ms;
+}
+.logo:hover {
+    filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+    filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+    from {
+        transform: rotate(0deg);
+    } to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 0.01s linear;
+    }
+}
+
+.card {
+    background-color:rgba(218, 238, 245, 0.3);
+    width: 500px;
+}
+.card input{
+    width: 250;
+    padding: 1.25em;
+    border-radius: 5px;
+}
+
+.read-the-list {
+    background-color:rgba(218, 238, 245, 0.3);
+    color: #c6c6c6;
+}
+
+.table{
+    background-color:rgba(157, 222, 246, 0.3);
+    border-radius: 15px;
+    padding: 0.5em;
+    text-align: center;
+    padding:1.75em;
+}
+
+.things{
+    background-color:rgba(157, 222, 246, 0.3);
+    border-radius: 15px;
+    text-align:center;
+}

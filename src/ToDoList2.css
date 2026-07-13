@@ -1,0 +1,56 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+.logo {
+    position:fixed;
+    top: 30px;
+    left: 30px;
+    height: 10em;
+    will-change: filter;
+    transition: filter 300ms;
+}
+.logo span{
+    z-index: -10;
+}
+
+h1 {
+    color: #333;
+}
+
+input {
+    padding: 10px;
+    margin-right: 10px;
+    width: 300px;
+}
+
+button {
+    text-align:left;
+    height: 50px;
+    width: 40px;
+    padding: 10px;
+    background-color: rgba(97, 139, 154, 0);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+ul {
+    padding: 10px 0;
+    list-style-type: none;
+}
+
+li {
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    text-align: center;
+    justify-content: space-between;
+    background-color: rgba(157, 224, 246, 0.3);
+    padding: 0.7em;
+    border-radius:12px ;
+}
+
+li span {
+    cursor: pointer;
+}
