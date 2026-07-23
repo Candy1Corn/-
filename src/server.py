@@ -3,6 +3,7 @@ from flask_cors import CORS     # 請求跨域
 from 牙醫診所管理系統 import 新患者登記, 患者預約醫生與掛號, 醫生開藥與批價, 患者繳費, 檢查藥品庫存, 購入藥物
 from waitress import serve
 import json
+from pathlib import Path
 
 # project/
 # ├── src/
@@ -27,6 +28,8 @@ app = Flask(__name__)     # 參照上方，所以，種是使用它的預設：�
 # Flask 看到例外就回傳 500，終端機才會列出 traceback
 CORS(app)  # 允許所有來源的跨域請求
 
+BASE_DIR = Path(__file__).resolve().parent
+DATA_FILE = BASE_DIR / "小型資料.json"
 
 ##################### Flask + Svelte #####################
 # Svelte 應用程式將會負責所有的畫面渲染。它會透過 HTTP 請求 (API calls) 從 Python 後端獲取資料，然後動態地在瀏覽器中建立使用者介面
@@ -35,7 +38,7 @@ CORS(app)  # 允許所有來源的跨域請求
 def api_view_patients_info():      # 可用
     """API 端點：返回所有病患資料"""
     try:
-        with open("src/小型資料.json", "r", encoding="utf-8") as file:
+        with DATA_FILE.open("r", encoding="utf-8") as file:
             data = json.load(file)
         
         # 返回病患資料，注意數據結構
@@ -60,7 +63,7 @@ def api_view_patients_info():      # 可用
 def api_check_appointment_info():      # 可用
     """API 端點：返回所有病患資料"""
     try:
-        with open("src/小型資料.json", "r", encoding="utf-8") as file:
+        with DATA_FILE.open("r", encoding="utf-8") as file:
             data = json.load(file)
         
         # 返回病患資料，注意數據結構
@@ -85,7 +88,7 @@ def api_check_appointment_info():      # 可用
 def api_check_medications_info():      # 可用
     """API 端點：返回所有病患資料"""
     try:
-        with open("src/小型資料.json", "r", encoding="utf-8") as file:
+        with DATA_FILE.open("r", encoding="utf-8") as file:
             data = json.load(file)
         
         # 返回病患資料，注意數據結構
@@ -110,7 +113,7 @@ def api_check_medications_info():      # 可用
 @app.route('/api/patientsPay', methods=['GET'])
 def api_patients_pay():
     try:
-        with open("src/小型資料.json", "r", encoding="utf-8") as file:
+        with DATA_FILE.open("r", encoding="utf-8") as file:
             data = json.load(file)
 
         patient_id = request.args.get('patientID')
@@ -155,7 +158,7 @@ def check_price():
     """
     if request.method == 'GET':
         try:
-            with open("src/小型資料.json", "r", encoding="utf-8") as file:
+            with DATA_FILE.open("r", encoding="utf-8") as file:
                 data = json.load(file)
             
             expenses_data = data.get("expenses", [{}])[0]
@@ -182,7 +185,7 @@ def check_price():
 
     if request.method == 'POST':
         import time
-        with open("src/小型資料.json", "r", encoding="utf-8") as file:
+        with DATA_FILE.open("r", encoding="utf-8") as file:
             data = json.load(file)
 
         # 從 JSON body 獲取數據，而不是 form
@@ -234,7 +237,7 @@ def check_price():
         data["expenses"][0][patientID]["type"] = result
         data["expenses"][0][patientID]["paied"] = "未繳費"
 
-        with open("src/小型資料.json", "w", encoding="utf-8") as file:
+        with DATA_FILE.open("w", encoding="utf-8") as file:
             json.dump(data, file, ensure_ascii=False, indent=4)
 
         messages.append("批價與診斷紀錄已更新成功")
@@ -329,13 +332,13 @@ def appointmentADocter():       # 可用
 # 不會拆解回傳的值，等一下AI
 @app.route('/checkAppointmentInfo')
 def checkAppointmentInfo():
-    with open("src/小型資料.json", "r", encoding="utf-8") as file:
+    with DATA_FILE.open("r", encoding="utf-8") as file:
         data = json.load(file)
     return render_template("checkAppointmentInfo.html", patients=data["appointments"][0])
 
 @app.route('/checkPatientsInfo')
 def checkPatientsInfo():
-    with open("src/小型資料.json", "r", encoding="utf-8") as file:
+    with DATA_FILE.open("r", encoding="utf-8") as file:
         data = json.load(file)
     return render_template("checkPatientsInfo.html", patients=data["patients"][1])
 
@@ -347,7 +350,7 @@ def checkPrice():       # 可用
 
     if request.method == 'POST':
         import time
-        with open("src/小型資料.json", "r", encoding="utf-8") as file:
+        with DATA_FILE.open("r", encoding="utf-8") as file:
             data = json.load(file)
 
         patientID = request.form['patientID']
@@ -414,7 +417,7 @@ def patientsPay():      # 可用
 
 @app.route('/checkMedicationsInfo')
 def checkMedicationsInfo():
-    with open("src/小型資料.json", "r", encoding="utf-8") as file:
+    with DATA_FILE.open("r", encoding="utf-8") as file:
         data = json.load(file)
     return render_template("checkMedicationsInfo.html", patients=data["medications"][0])
 

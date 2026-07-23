@@ -1,15 +1,15 @@
 {
     "patients": [
-        10,
+        12,
         {
             "P1": {
                 "name": "病人一號",
                 "dob": "2000-01-01",
                 "contact": "123456789",
                 "address": "某省某市某區某街道幾號幾樓",
-                "description": "有過過敏歷史；新增補充：無；新增補充：無",
-                "diagnosis": "牙痛",
-                "result": "補牙",
+                "description": "有過過敏歷史；新增補充：無；新增補充：無；新增補充：哈梅爾！哈梅爾！我們都愛哈梅爾！",
+                "diagnosis": "",
+                "result": "洗牙",
                 "prescription": null,
                 "paied": "已繳費"
             },
@@ -103,6 +103,26 @@
                 "diagnosis": "",
                 "result": "",
                 "prescription": null
+            },
+            "P11": {
+                "name": "fishPM",
+                "dob": "11/6",
+                "contact": 19070943256,
+                "address": "街道",
+                "description": "無",
+                "diagnosis": "",
+                "result": "",
+                "prescription": null
+            },
+            "P12": {
+                "name": "林",
+                "dob": "0427",
+                "contact": 958,
+                "address": "街道",
+                "description": "無",
+                "diagnosis": "",
+                "result": "",
+                "prescription": null
             }
         }
     ],
@@ -135,10 +155,10 @@
     "expenses": [
         {
             "P1": {
-                "cost": 15,
-                "date": "2025-07-02 23:21:44",
-                "type": "補牙",
-                "paied": "2025-07-04 12:03:14"
+                "cost": 200,
+                "date": "2026-07-23 17:32:34",
+                "type": "洗牙",
+                "paied": "未繳費"
             },
             "P2": {
                 "cost": 125,
@@ -156,9 +176,9 @@
                 "type": "牙痛"
             },
             "D2": {
-                "patientID": "P3",
-                "time": "2025-07-01 01:10:35",
-                "type": "諮詢"
+                "patientID": "P1",
+                "time": "2026-07-23 17:36:40",
+                "type": "洗牙"
             }
         }
     ],
@@ -183,6 +203,10 @@
             "新的藥": {
                 "stock": "100",
                 "threshold": "10"
+            },
+            "alprazolam": {
+                "stock": "100",
+                "threshold": "50"
             }
         }
     ]

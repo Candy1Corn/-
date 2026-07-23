@@ -1,12 +1,16 @@
 import json, time, os
 from dotenv import load_dotenv
+from pathlib import Path
 # from pprint import pprint
 
 load_dotenv()
 
+BASE_DIR = Path(__file__).resolve().parent
+DATA_FILE = BASE_DIR / "小型資料.json"
+
 ################## 看病前 ##################
 def 新患者登記(name, birth, phone, address, description):     # 需要再json 資料庫新增病例，在預約中心增患者
-    with open(os.path.join(os.getcwd(), 'src/小型資料.json'), 'r', encoding='utf-8') as file:
+    with DATA_FILE.open("r", encoding="utf-8") as file:
         data = json.load(file)
 
     data["patients"][0] += 1
@@ -14,11 +18,11 @@ def 新患者登記(name, birth, phone, address, description):     # 需要再js
 
     data["patients"][1].update( {patientsID : {"name" : name, "dob" : birth, "contact" : phone, "address" : address,"description" : description, "diagnosis" : "","result" : "","prescription" : None} } )
     # print(data["patients"][1])
-    with open(os.path.join(os.getcwd(), 'src/小型資料.json'), 'w', encoding='utf-8') as file:
+    with DATA_FILE.open("w", encoding="utf-8") as file:
         json.dump(data, file, ensure_ascii=False, indent=4)
 
 def 患者預約醫生與掛號(doctorID, patientID, 看診原因):     # 護士會依照病人要求(會判斷有沒有來看診過)，將患者分派給醫生，同時也包刮掛號功能，應該說如果要掛號的話就用這個
-    with open(os.path.join(os.getcwd(), 'src//小型資料.json'), 'r', encoding='utf-8') as file:
+    with DATA_FILE.open("r", encoding="utf-8") as file:
         data = json.load(file)
 
     if patientID not in data["patients"][1]:
@@ -27,18 +31,18 @@ def 患者預約醫生與掛號(doctorID, patientID, 看診原因):     # 護士
 
     data["appointments"][0].update( {doctorID : {"patientID" : patientID, "time" : time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()), "type" : 看診原因} } )
     
-    with open(os.path.join(os.getcwd(), 'src/小型資料.json'), 'w', encoding='utf-8') as file:
+    with DATA_FILE.open("w", encoding="utf-8") as file:
         json.dump(data, file, ensure_ascii=False, indent=4)
 
 def 查看預約明細():     # 醫生看自己的預約明細
-    with open( os.path.join(os.getcwd(), 'src/小型資料.json'), 'r', encoding='utf-8') as file:
+    with DATA_FILE.open("r", encoding="utf-8") as file:
         data = json.load(file)
     for i in data["appointments"]:
         print(i)        # {'D1': {'patientID': 'P1', 'time': '2025-07-01 01:10:14', 'type': '諮詢'}, 'D2': {'patientID': 'P3', 'time': '2025-07-01 01:10:35', 'type': '諮詢'}}
     return
 
 def 查看病人資料():     # 查看病人資料，可以查詢病人所有的資料，包括醫生、看診時間等等
-    with open(os.path.join(os.getcwd(), 'src/小型資料.json'), 'r', encoding='utf-8') as file:
+    with DATA_FILE.open("r", encoding="utf-8") as file:
         data = json.load(file)
     print("本診所目前累積了 ", data["patients"][1], "個病例")
     for i in data["patients"][1]:
@@ -49,7 +53,7 @@ def 查看病人資料():     # 查看病人資料，可以查詢病人所有的
 ################## 看病後 ##################
 def 醫生開藥與批價():     # 醫生為病人開藥、批價，醫生會修改到病人的json，開藥的時候會檢查藥物的json 值是否為負或接近0，並依照醫生的開藥方是相應增減
     # 當醫生開始看診的時候，會寫些病人的症狀甚麼的，哪裡蛀牙之類的，照了x光這類的過程
-    with open(os.path.join(os.getcwd(), 'src/小型資料.json'), 'r', encoding='utf-8') as file:
+    with DATA_FILE.open("r", encoding="utf-8") as file:
         data = json.load(file)
 
     patientID = input("請輸入病人病歷號碼: ")
@@ -102,11 +106,11 @@ def 醫生開藥與批價():     # 醫生為病人開藥、批價，醫生會修
     data["expenses"][0][patientID]["type"] = data["appointments"][patientID]["type"]
     data["expenses"][0][patientID]["paied"] = "未繳費"
 
-    with open(os.path.join(os.getcwd(), 'src/小型資料.json'), 'w', encoding='utf-8') as file:
+    with DATA_FILE.open("w", encoding="utf-8") as file:
         json.dump(data, file, ensure_ascii=False, indent=4)
 
 def 患者繳費(patientID):     # 患者視角。如果繳費完成，繳費的paied 會記錄繳費當下的時間，還沒就會一直顯示未繳費
-    with open(os.path.join(os.getcwd(), 'src/小型資料.json'), 'r', encoding='utf-8') as file:
+    with DATA_FILE.open("r", encoding="utf-8") as file:
         data = json.load(file)
 
     if ( patientID not in data["patients"][1] ):
@@ -120,13 +124,13 @@ def 患者繳費(patientID):     # 患者視角。如果繳費完成，繳費的
         beforePay = ("病人 " + data["patients"][1][patientID] + "未繳費，請繳" + data["expenses"][0][patientID]["cost"] + "元")
         data["patients"][1][patientID]["paied"] = "已繳費"
         data["expenses"][0][patientID]["paied"] = time.strftime("%Y-%m-%d %H:%M:%S")
-        with open(os.path.join(os.getcwd(), 'src/小型資料.json'), 'w', encoding='utf-8') as f:
+        with DATA_FILE.open("w", encoding="utf-8") as file:
             json.dump(data, f, ensure_ascii=False, indent=4)
             oneSentence = "已經繳費，可以回家啦~~祝您身體早日恢復元氣!"
     return oneSentence
 
 def 檢查藥品庫存():     # 檢查藥品庫存，如果低於10，就會警告低於10
-    with open(os.path.join(os.getcwd(), 'src/小型資料.json'), 'r', encoding='utf-8') as file:
+    with DATA_FILE.open("r", encoding="utf-8") as file:
         data = json.load(file)
     for i in data["medications"][0]:
         if i["stock"] < 11 :
@@ -135,7 +139,7 @@ def 檢查藥品庫存():     # 檢查藥品庫存，如果低於10，就會警�
             print("藥品 : ", i)     # 藥品 :  Aspirin
 
 def 購入藥物(medicationsName, quantity, threshold):
-    with open(os.path.join(os.getcwd(), 'src/小型資料.json'), 'r', encoding='utf-8') as file:
+    with DATA_FILE.open("r", encoding="utf-8") as file:
         data = json.load(file)
 
     # medicationsName = input("請輸入藥物名稱: ")
@@ -148,5 +152,5 @@ def 購入藥物(medicationsName, quantity, threshold):
         # threshold = int(input("請輸入該藥物的最低庫存數量: "))
         data["medications"][0].update( {medicationsName : {"stock" : quantity, "threshold" : threshold} } )
 
-    with open(os.path.join(os.getcwd(), 'src/小型資料.json'), 'w', encoding='utf-8') as file:
+    with DATA_FILE.open("w", encoding="utf-8") as file:
         json.dump(data, file, ensure_ascii=False, indent=4)
