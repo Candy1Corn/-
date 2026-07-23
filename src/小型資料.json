@@ -1,6 +1,6 @@
 {
     "patients": [
-        12,
+        13,
         {
             "P1": {
                 "name": "病人一號",
@@ -123,6 +123,17 @@
                 "diagnosis": "",
                 "result": "",
                 "prescription": null
+            },
+            "P13": {
+                "name": "魚湯",
+                "dob": "11/6",
+                "contact": 973382612,
+                "address": "街道",
+                "description": "無；新增補充：無",
+                "diagnosis": "已經洗牙",
+                "result": "洗牙",
+                "prescription": null,
+                "paied": "已繳費"
             }
         }
     ],
@@ -158,22 +169,28 @@
                 "cost": 200,
                 "date": "2026-07-23 17:32:34",
                 "type": "洗牙",
-                "paied": "未繳費"
+                "paied": "2026-07-23 18:22:07"
             },
             "P2": {
                 "cost": 125,
                 "date": "2025-07-03 22:04:50",
                 "type": "補牙",
                 "paied": "2025-07-03 22:05:34"
+            },
+            "P13": {
+                "cost": 200,
+                "date": "2026-07-23 18:44:22",
+                "type": "洗牙",
+                "paied": "2026-07-23 18:44:40"
             }
         }
     ],
     "appointments": [
         {
             "D1": {
-                "patientID": "P8",
-                "time": "2025-07-03 22:00:17",
-                "type": "牙痛"
+                "patientID": "P13",
+                "time": "2026-07-23 18:42:50",
+                "type": "洗牙"
             },
             "D2": {
                 "patientID": "P1",

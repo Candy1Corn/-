@@ -1,9 +1,9 @@
 import json, time, os
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 from pathlib import Path
 # from pprint import pprint
 
-load_dotenv()
+# load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent
 DATA_FILE = BASE_DIR / "小型資料.json"
@@ -110,8 +110,11 @@ def 醫生開藥與批價():     # 醫生為病人開藥、批價，醫生會修
         json.dump(data, file, ensure_ascii=False, indent=4)
 
 def 患者繳費(patientID):     # 患者視角。如果繳費完成，繳費的paied 會記錄繳費當下的時間，還沒就會一直顯示未繳費
-    with DATA_FILE.open("r", encoding="utf-8") as file:
-        data = json.load(file)
+    try:
+        with DATA_FILE.open("r", encoding="utf-8") as file:
+            data = json.load(file)
+    except (json.JSONDecodeError, FileNotFoundError):
+        return "資料庫讀取錯誤，請聯繫系統管理員"
 
     if ( patientID not in data["patients"][1] ):
         return ("查無此病人")
@@ -121,10 +124,11 @@ def 患者繳費(patientID):     # 患者視角。如果繳費完成，繳費的
         # oneSentence = ("病人 " + data["patients"][1][patientID] + "已經繳費，可以回家啦~~祝您身體早日恢復元氣!")
         oneSentence = "已經繳費，可以回家啦~~祝您身體早日恢復元氣!"
     else:
-        beforePay = ("病人 " + data["patients"][1][patientID] + "未繳費，請繳" + data["expenses"][0][patientID]["cost"] + "元")
+        # 待做完的邊界條件檢測：
+        # beforePay = ("病人 " + data["patients"][1][patientID] + "未繳費，請繳" + data["expenses"][0][patientID]["cost"] + "元")
         data["patients"][1][patientID]["paied"] = "已繳費"
         data["expenses"][0][patientID]["paied"] = time.strftime("%Y-%m-%d %H:%M:%S")
-        with DATA_FILE.open("w", encoding="utf-8") as file:
+        with DATA_FILE.open("w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=4)
             oneSentence = "已經繳費，可以回家啦~~祝您身體早日恢復元氣!"
     return oneSentence
