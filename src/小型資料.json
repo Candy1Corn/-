@@ -1,6 +1,6 @@
 {
     "patients": [
-        9,
+        10,
         {
             "P1": {
                 "name": "病人一號",
@@ -89,6 +89,16 @@
                 "dob": "12341@34",
                 "contact": 12341234,
                 "address": "rqcwer",
+                "description": "無",
+                "diagnosis": "",
+                "result": "",
+                "prescription": null
+            },
+            "P10": {
+                "name": "魚湯",
+                "dob": "11/6",
+                "contact": 973382612,
+                "address": "街道",
                 "description": "無",
                 "diagnosis": "",
                 "result": "",
