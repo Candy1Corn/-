@@ -2,6 +2,7 @@ import json, time, os
 # from dotenv import load_dotenv
 from pathlib import Path
 # from pprint import pprint
+from db import get_db
 
 # load_dotenv()
 

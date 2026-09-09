@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS     # 請求跨域
-from 牙醫診所管理系統 import 新患者登記, 患者預約醫生與掛號, 醫生開藥與批價, 患者繳費, 檢查藥品庫存, 購入藥物
+from 牙醫診所管理系統sqlV import 新患者登記, 患者預約醫生與掛號, 醫生開藥與批價, 患者繳費, 檢查藥品庫存, 購入藥物
 from waitress import serve
 import json
 from pathlib import Path
