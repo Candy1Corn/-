@@ -245,7 +245,7 @@ def appoint_a_docter():
     reason = data.get('看診原因') or data.get('reason') or ''
     appoint_id = 患者預約醫生與掛號(doctorID, patientID, reason)
     if appoint_id:
-        return jsonify({"status": "success", "appointment_id": appoint_id}), 200
+        return jsonify({"status": "success", "message": appoint_id}), 200
     return jsonify({"status": "error", "message": "預約失敗，請確認病患或醫生資料是否存在"}), 400
 
 

@@ -11,7 +11,7 @@
 <button onclick={() => goto('nurses/check_price')}> 查看付款資訊 </button>
 <button onclick={() => goto('nurses/add_new_patient')}> 新增患者病歷 </button>
 <button onclick={() => goto('nurses/add_new_medications')}> 新增藥品資訊 </button>
-<button onclick={() => goto('doctors/add_new_appointment')}> 新增預約掛號 </button>
+<button onclick={() => goto('nurses/add_new_appointment')}> 新增預約掛號 </button>
 
 <style>
     a {
