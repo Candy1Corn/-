@@ -14,6 +14,44 @@ def _parse_id(val):
 
 ################## 看病前 ##################
 
+def 新醫生登記(name, birth, phone, address, history, department_id):
+    """
+    在 doctors 表中新增一筆醫生紀錄
+    對應 SQL 資料表: patients (name, dob, phone, address, history, department_id)
+    """
+    dob = str(birth).strip() if birth and str(birth).strip() else None
+    phone_str = str(phone).strip() if phone else None
+    dept_id = _parse_id(department_id)
+
+    sql = """
+        INSERT INTO doctors (name, dob, phone, address, history, dept_id)
+        VALUES (%s, %s, %s, %s, %s, %s)
+    """
+    with get_db() as cursor:
+        cursor.execute(sql, (name, dob, phone_str, address, history, dept_id))
+        new_id = cursor.lastrowid
+        print(f"成功登記！醫生編號為: P{new_id}")
+        return new_id
+    
+def 新護士登記(name, birth, phone, address, department_id):
+    """
+    在 nurses 表中新增一筆護士紀錄
+    對應 SQL 資料表: patients (name, dob, phone, address, department_id)
+    """
+    dob = str(birth).strip() if birth and str(birth).strip() else None
+    phone_str = str(phone).strip() if phone else None
+    dept_id = _parse_id(department_id)
+
+    sql = """
+        INSERT INTO nurses (name, dob, phone, address, dept_id)
+        VALUES (%s, %s, %s, %s, %s)
+    """
+    with get_db() as cursor:
+        cursor.execute(sql, (name, dob, phone_str, address, dept_id))
+        new_id = cursor.lastrowid
+        print(f"成功登記！病患編號為: P{new_id}")
+        return new_id
+    
 def 新患者登記(name, birth, phone, address, description):
     """
     在 patients 表中新增一筆病患紀錄

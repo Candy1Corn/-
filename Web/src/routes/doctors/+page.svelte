@@ -4,11 +4,11 @@
 
 <h1>Hi doctors</h1>
 
-<button onclick={() => goto('doctors/view_patients_info')}> 查看患者資料 </button>
-<button onclick={() => goto('doctors/view_medications_info')}> 查看藥品資訊 </button>
-<button onclick={() => goto('doctors/view_appointment_info')}> 查看預約掛號狀況 </button>
+<button onclick={() => goto('nurses/view_patients_info')}> 查看患者資料 </button>
+<button onclick={() => goto('nurses/view_medications_info')}> 查看藥品資訊 </button>
+<button onclick={() => goto('nurses/view_appointment_info')}> 查看預約掛號狀況 </button>
 <button onclick={() => goto('doctors/check_price')}> 看診結果 </button>
-<button onclick={() => goto('doctors/add_new_appointment')}> 新增預約掛號 </button>
+<button onclick={() => goto('nurses/add_new_appointment')}> 新增預約掛號 </button>
 
 <style>
     a {

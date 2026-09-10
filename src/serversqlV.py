@@ -7,6 +7,8 @@ from db import get_db
 from 牙醫診所管理系統sqlV import (
     _parse_id,
     新患者登記,
+    新醫生登記,
+    新護士登記,
     患者預約醫生與掛號,
     查看預約明細,
     查看病人資料,
@@ -248,6 +250,29 @@ def appoint_a_docter():
         return jsonify({"status": "success", "message": appoint_id}), 200
     return jsonify({"status": "error", "message": "預約失敗，請確認病患或醫生資料是否存在"}), 400
 
+
+@app.route('/api/newDoctor', methods=['POST'])
+def new_doctor():
+    data = request.get_json() or request.form
+    name = data.get('name')
+    birth = data.get('birth')
+    phone = data.get('phone')
+    address = data.get('address')
+    history = data.get('history', '')
+    department_id = data.get('department_id')
+    new_id = 新醫生登記(name, birth, phone, address, history, department_id)
+    return jsonify({"status": "success", "doctor_id": f"P{new_id}"}), 200
+
+@app.route('/api/newNurse', methods=['POST'])
+def new_nurse():
+    data = request.get_json() or request.form
+    name = data.get('name')
+    birth = data.get('birth')
+    phone = data.get('phone')
+    address = data.get('address')
+    department_id = data.get('department_id', '')
+    new_id = 新護士登記(name, birth, phone, address, department_id)
+    return jsonify({"status": "success", "nurse_id": f"P{new_id}"}), 200
 
 @app.route('/api/newPatient', methods=['POST'])
 def new_patient():

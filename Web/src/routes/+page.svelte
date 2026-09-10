@@ -1,4 +1,4 @@
-<h1>湯閣牙醫診所</h1>
+<h1>湯閣牙醫院</h1>
 <h2>please choose an identity</h2>
 
   <div class="identity">
