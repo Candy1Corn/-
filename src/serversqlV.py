@@ -1,31 +1,21 @@
 from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS     # 請求跨域
-from 牙醫診所管理系統 import 新患者登記, 患者預約醫生與掛號, 醫生開藥與批價, 患者繳費, 檢查藥品庫存, 購入藥物
+from 牙醫診所管理系統sqlV import (
+    新患者登記,
+    患者預約醫生與掛號,
+    查看預約明細,
+    查看病人資料,
+    醫生開藥與批價,
+    患者繳費,
+    檢查藥品庫存,
+    購入藥物
+)
 from waitress import serve
 import json
 from pathlib import Path
 
-# project/
-# ├── src/
-# │   └── server.py
-# │   └── templates/
-# │       ├── index.html
-# │       ├── newPatient.html
-# │       ├── appointmentADocter.html
-# │       ├── checkAppointmentInfo.html
-# │       ├── checkPatientsInfo.html
-# │       ├── checkPrice.html
-# │       ├── newMedications.html
-# │   └── static/
-# │       └── style.css
-# │       └── indexStyle.css
-# │       └── teeth.png
 
-            ##################### 加上 redirect() ? #################ˇew;r;ho lvucqnuoi32prewk;
-
-
-app = Flask(__name__)     # 參照上方，所以，種是使用它的預設：一些html 檔案預設放在叫做template 的資料夾裡面
-# Flask 看到例外就回傳 500，終端機才會列出 traceback
+app = Flask(__name__)
 CORS(app)  # 允許所有來源的跨域請求
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -329,82 +319,63 @@ def appointmentADocter():       # 可用
         患者預約醫生與掛號(doctorID, patientID, 看診原因)
     return render_template( "appointmentADocter.html" )
 
-# 不會拆解回傳的值，等一下AI
 @app.route('/checkAppointmentInfo')
 def checkAppointmentInfo():
-    with DATA_FILE.open("r", encoding="utf-8") as file:
-        data = json.load(file)
-    return render_template("checkAppointmentInfo.html", patients=data["appointments"][0])
+    records = 查看預約明細()
+    # 相容現有 checkAppointmentInfo.html (以 patients.items() 渲染)
+    appt_dict = {
+        f"D{r['doc_id']}（{r['doctor_name']}）- 預約單#{r['appointment_id']}": {
+            "patientID": f"P{r['patient_id']}（{r['patient_name']}）",
+            "type": f"{r['item']}（時間：{r['appointment_time']}，狀態：{r['status']}）"
+        }
+        for r in records
+    }
+    return render_template("checkAppointmentInfo.html", patients=appt_dict, appointments=records)
 
 @app.route('/checkPatientsInfo')
 def checkPatientsInfo():
-    with DATA_FILE.open("r", encoding="utf-8") as file:
-        data = json.load(file)
-    return render_template("checkPatientsInfo.html", patients=data["patients"][1])
+    patient_list = 查看病人資料()
+    # 相容現有 checkPatientsInfo.html (以 patients.items() 且欄位名為 contact 渲染)
+    patients_dict = {
+        f"P{p['patient_id']}": {
+            "name": p['name'],
+            "dob": str(p['dob']) if p['dob'] else "未提供",
+            "contact": p['phone'] or "未提供",
+            "address": p['address'] or "",
+            "description": p['subject'] or ""
+        }
+        for p in patient_list
+    }
+    return render_template("checkPatientsInfo.html", patients=patients_dict, patient_list=patient_list)
 
-# 這個有比較複雜的判斷輸入，等一下寫
 @app.route('/checkPrice', methods=['GET', 'POST'])
-def checkPrice():       # 可用
-    # 醫生開藥與批價()
-    # return render_template( "checkPrice.html" )
-
+def checkPrice():
     if request.method == 'POST':
-        import time
-        with DATA_FILE.open("r", encoding="utf-8") as file:
-            data = json.load(file)
+        patientID = request.form.get('patientID', '').strip()
+        description = request.form.get('description', '').strip()
+        diagnosis = request.form.get('diagnosis', '').strip()
+        result = request.form.get('result', '').strip()
+        prescription = request.form.get('prescription', '').strip()
+        cost_str = request.form.get('cost', '').strip()
+        cost = int(cost_str) if cost_str.isdigit() else 0
 
-        patientID = request.form['patientID']
-        description = request.form.get('description', "")
-        diagnosis = request.form['diagnosis']
-        result = request.form['result']
-        prescription = request.form.get('prescription', "")
-        cost = int(request.form['cost'])
+        # 直接呼叫 牙醫診所管理系統sqlV 中的 醫生開藥與批價 寫入 clinic_db 資料庫
+        success = 醫生開藥與批價(
+            patientID=patientID,
+            doc_id=1,
+            description=description,
+            diagnosis=diagnosis,
+            result=result,
+            prescription=prescription,
+            cost=cost
+        )
 
-        messages = []
+        if success:
+            msg = f"批價與診斷紀錄已寫入資料庫！病患：{patientID}，項目：{result}，費用：${cost}"
+        else:
+            msg = f"批價失敗！請確認病患 ID（{patientID}）是否存在，或資料庫中是否有醫生資料。"
 
-        # 補充診斷資料
-        if description and description.strip():
-            data["patients"][1][patientID]["description"] += f"；新增補充：{description}"
-
-        data["patients"][1][patientID]["diagnosis"] = diagnosis
-        data["patients"][1][patientID]["result"] = result
-
-        # 處理開藥
-        used_drugs = []
-        if result == "開藥" and prescription:
-            if ", " in prescription:
-                used_drugs = prescription.split(", ")
-            else:
-                used_drugs = [prescription]
-
-            for drug in used_drugs:
-                if drug not in data["medications"][0]:
-                    data["medications"][0][drug] = {"stock": 0, "threshold": 10}
-                    messages.append(f"⚠ 新增藥品『{drug}』，請補貨")
-
-                # 檢查庫存
-                stock = data["medications"][0][drug]["stock"]
-                threshold = data["medications"][0][drug]["threshold"]
-                if stock <= threshold:
-                    messages.append(f"⚠ 藥品『{drug}』庫存緊張！目前數量：{stock}")
-                else:
-                    data["medications"][0][drug]["stock"] -= 1
-
-        data["patients"][1][patientID]["prescription"] = used_drugs if used_drugs else None
-
-        # 記錄費用
-        if patientID not in data["expenses"][0]:
-            data["expenses"][0][patientID] = {}
-        data["expenses"][0][patientID]["cost"] = cost
-        data["expenses"][0][patientID]["date"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-        data["expenses"][0][patientID]["type"] = result
-        data["expenses"][0][patientID]["paied"] = "未繳費"
-
-        with open("src/小型資料.json", "w", encoding="utf-8") as file:
-            json.dump(data, file, ensure_ascii=False, indent=4)
-
-        messages.append("批價與診斷紀錄已更新成功")
-        return render_template("checkPrice.html", oneSentence="；".join(messages))
+        return render_template("checkPrice.html", 一句話=msg, oneSentence=msg)
 
     return render_template("checkPrice.html")
 
@@ -417,9 +388,16 @@ def patientsPay():      # 可用
 
 @app.route('/checkMedicationsInfo')
 def checkMedicationsInfo():
-    with DATA_FILE.open("r", encoding="utf-8") as file:
-        data = json.load(file)
-    return render_template("checkMedicationsInfo.html", patients=data["medications"][0])
+    meds = 檢查藥品庫存()
+    # 相容現有 checkMedicationsInfo.html (以 patients.items() 且 info.stock 渲染)
+    meds_dict = {
+        m['name']: {
+            "stock": m['stock'],
+            "threshold": m['threshold']
+        }
+        for m in meds
+    }
+    return render_template("checkMedicationsInfo.html", patients=meds_dict, medications=meds)
 
 @app.route('/newMedications', methods = ['GET', 'POST'])
 def newMedications():
