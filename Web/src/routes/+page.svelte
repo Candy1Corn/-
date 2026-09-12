@@ -15,4 +15,12 @@
         flex-direction: row;
         justify-content:space-around;
     }
+    a {
+        margin: 50px;
+    }
+    a:hover{
+        cursor: pointer;
+        filter: drop-shadow(0 0 1em  #6291f7);
+        transition: all 0.2s ease-in-out
+    }
 </style>

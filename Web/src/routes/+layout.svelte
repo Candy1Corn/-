@@ -16,6 +16,26 @@
 	let toastType = $state<'info' | 'error' | 'success'>('info');
 	let toastTimeout: any = null;
 
+	// 深色模式
+	let isDarkMode = $state(false);
+
+	if (browser) {
+		const saved = localStorage.getItem('theme');
+		isDarkMode = saved
+			? saved === 'dark'
+			: window.matchMedia('(prefers-color-scheme: dark)').matches;
+	}
+
+	$effect(() => {
+		if (!browser) return;
+		document.documentElement.classList.toggle('dark', isDarkMode);
+		localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+	});
+
+	function toggleDarkMode() {
+		isDarkMode = !isDarkMode;
+	}
+
 	function showNotification(msg: string, type: 'info' | 'error' | 'success' = 'info') {
 		toastMsg = msg;
 		toastType = type;
@@ -90,6 +110,16 @@
 <nav>
 	<a href="/">home</a><p></p>
 	<a href="/about">about</a><p></p>
+	<button
+		type="button"
+		class="theme-toggle-btn"
+		onclick={toggleDarkMode}
+		title={isDarkMode ? '切換為淺色模式' : '切換為深色模式'}
+		aria-label="切換深色模式"
+	>
+		{isDarkMode ? '☀️' : '🌙'}
+	</button>
+	<p></p>
 	{#if !$auth.isLoggedIn}
 		<a href="/login">log in</a><p></p>
 		<button type="button" class="nav-logout-btn" onclick={handleLogout} title="登出系統">log out</button>
@@ -144,6 +174,21 @@
 
   nav a:hover {
     color: var(--link-hover, #3492e5);
+  }
+
+  .theme-toggle-btn {
+    background: transparent;
+    border: none;
+    font-size: 1.2rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    transition: background 0.2s;
+  }
+
+  .theme-toggle-btn:hover {
+    background: var(--bg-2, #e0e6eb);
   }
 
   .nav-logout-btn {
