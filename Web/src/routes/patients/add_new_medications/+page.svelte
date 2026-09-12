@@ -1,15 +1,16 @@
 <script lang="ts">
-    let doctorID = '';
-    let reason = '';
-    let patientID = '';
+
+    let medicationsName = '';
+    let quantity = '';
+    let threshold = '';
 
     let submitting = false;
     let message = '';
     let errorMsg = '';
 
     async function submitForm() {
-        if (!doctorID || !patientID) {
-            errorMsg = '請至少填寫病人 ID 與醫生 ID！';
+        if (!medicationsName || !threshold) {
+            errorMsg = '請填寫完整資訊！';
             return;
         }
 
@@ -18,22 +19,22 @@
         errorMsg = '';
 
         try {
-            const response = await fetch('http://localhost:7999/api/appointADocter', {
+            const response = await fetch('http://localhost:7999/api/newMedications', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    doctorID,
-                    reason,
-                    patientID
+                    medicationsName,
+                    quantity: parseInt(quantity) || quantity,
+                    threshold: parseInt(threshold) || threshold,
                 })
             });
 
             const data = await response.json();
             if (response.ok) {
-                message = `預約成功！${data.message}`;
-                doctorID = '';
-                reason = '';
-                patientID = ''
+                message = `藥品成功入庫！${data.message}`;
+                medicationsName = '';
+                quantity = '';
+                threshold = ''
             } else {
                 errorMsg = data.message || '登記失敗，請檢查輸入資料';
             }
@@ -46,26 +47,26 @@
 </script>
 
 <main>
-    <h1>新增預約掛號</h1>
+    <h1>藥品入庫</h1>
 
     <div class="form-container">
         <div class="field">
-            <label for="doctorID">醫生 ID *</label>
-            <input id="doctorID" type="text" bind:value={doctorID} placeholder="請輸入醫生 ID" required />
+            <label for="name">藥品名稱 *</label>
+            <input id="med_name" type="text" bind:value={medicationsName} placeholder="請輸入藥品名稱" required />
         </div>
 
         <div class="field">
-            <label for="reason">看診原因</label>
-            <input id="reason" type="text" bind:value={reason} />
+            <label for="quantity">存入數量</label>
+            <input id="qty" type="number" bind:value={quantity} />
         </div>
 
         <div class="field">
-            <label for="patientID">病人 ID *</label>
-            <input id="patientID" type="text" bind:value={patientID} placeholder="請輸入病人 ID" required />
+            <label for="number">警戒值 *</label>
+            <input id="threshold" type="tel" bind:value={threshold} placeholder="填入警戒值" required />
         </div>
 
         <button on:click|preventDefault={submitForm} disabled={submitting}>
-            {submitting ? '預約中...' : '預約成功'}
+            {submitting ? '入庫中...' : '入庫成功'}
         </button>
 
         {#if message}

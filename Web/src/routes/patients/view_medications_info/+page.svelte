@@ -1,21 +1,14 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import { goto } from '$app/navigation';
-    
-    // 定義病患資訊的資料結構
-    type PatientInfo = {
-        name: string;
-        dob: string;
-        contact: string;
-        address: string;
-        description: string;
-        diagnosis: string;
-        prescription: string[] | null;
-        result: string;
+
+    type MedicationsInfo = {
+        stock: number;
+        threshold: number;
     };
 
-    // 使用 Record<string, PatientInfo> 來儲存以病歷號為鍵的病患物件
-    let patients: Record<string, PatientInfo> = {};
+    // 使用 Record<string, DoctorsInfo> 來儲存以病歷號為鍵的病患物件
+    let medications: Record<string, MedicationsInfo> = {};
     let loading = true;
     let error: string | null = null;
 
@@ -23,14 +16,14 @@
     onMount(async () => {
         try {
             // 呼叫後端 API，注意要使用完整的 URL
-            const response = await fetch('http://localhost:7999/api/viewPatientsInfo');
+            const response = await fetch('http://localhost:7999/api/checkMedicationsInfo');
 
             if (!response.ok) {
                 throw new Error(`伺服器錯誤: ${response.status}`);
             }
 
             // 將回應的 JSON 資料直接存入 patients 物件
-            patients = await response.json();
+            medications = await response.json();
         } catch (err) {
             if (err instanceof Error) {
                 error = `無法載入病患資料：${err.message}`;
@@ -46,17 +39,16 @@
 
 
 <svelte:head>
-    <title>病患資料列表 - 湯閣牙醫院</title>
+    <title>藥品資料列表 - 湯閣牙醫院</title>
 </svelte:head>
-
 
 <main>
     <div class="header-nav">
         <button class="btn-back" onclick={() => goto('/patients')}>
             ‹ 返回
         </button>
-        <button class="btn-add" onclick={() => goto('/patients/add_new_patient')}>
-            + 新增病患資訊
+        <button class="btn-add" onclick={() => goto('/patients/add_new_medications')}>
+            + 新增藥品資訊
         </button>
     </div>
 
@@ -64,21 +56,16 @@
         <p>正在從伺服器載入資料...</p>
     {:else if error}
         <p style="color: red;">{error}</p>
-    {:else if Object.keys(patients).length === 0}
-        <p>目前沒有病患資料。</p>
+    {:else if Object.keys(medications).length === 0}
+        <p>目前沒有藥物資料。</p>
     {:else}
         <div class="big-table-container">
             <table border="1">
                 <thead>
                     <tr>
-                        <th>病歷號碼</th>
-                        <th>病人姓名</th>
-                        <th>生日</th>
-                        <th>連絡電話</th>
-                        <th>地址</th>
-                        <th>病史描述</th>
-                        <th>診斷</th>
-                        <th>處方</th>
+                        <th>藥品名稱</th>
+                        <th>庫存</th>
+                        <th>臨界值</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -86,16 +73,11 @@
                         使用 Object.entries 來遍歷物件的鍵和值
                         [pid, info] 透過解構賦值，分別取得病歷號和對應的病患資訊
                     -->
-                    {#each Object.entries(patients) as [pid, info]}
+                    {#each Object.entries(medications) as [mid, info]}
                     <tr>
-                        <td>{pid}</td>
-                        <td>{info.name}</td>
-                        <td>{info.dob}</td>
-                        <td>{info.contact}</td>
-                        <td>{info.address}</td>
-                        <td>{info.description}</td>
-                        <td>{info.diagnosis}</td>
-                        <td>{info.prescription ? info.prescription.join(', ') : '無'}</td>
+                        <td>{mid}</td>
+                        <td>{info.stock}</td>
+                        <td>{info.threshold}</td>
                     </tr>
                     {/each}
                 </tbody>

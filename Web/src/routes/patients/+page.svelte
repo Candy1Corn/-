@@ -4,12 +4,12 @@
 
 <h1>Hi patients</h1>
 
-<button onclick={() => goto('nurses/view_patients_info')}> 查看病人資料 </button>
-<button onclick={() => goto('nurses/view_appointment_info')}> 查看預約掛號狀況 </button>
-<button onclick={() => goto('nurses/pay')}> 收費、繳費 </button>
-<button onclick={() => goto('nurses/check_price')}> 查看付款資訊 </button>
-<button onclick={() => goto('nurses/add_new_patient')}> 新增患者病歷 </button>
-<button onclick={() => goto('nurses/add_new_appointment')}> 新增預約掛號 </button>
+<button onclick={() => goto('patients/view_patients_info')}> 查看病人資料 </button>
+<button onclick={() => goto('patients/view_appointment_info')}> 查看預約掛號狀況 </button>
+<button onclick={() => goto('patients/pay')}> 收費、繳費 </button>
+<button onclick={() => goto('patients/check_price')}> 查看付款資訊 </button>
+<button onclick={() => goto('patients/add_new_patient')}> 新增患者病歷 </button>
+<button onclick={() => goto('patients/add_new_appointment')}> 新增預約掛號 </button>
 
 <style>
     a {

@@ -1,84 +1,90 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+	import { onMount } from 'svelte';
 
-  let patientName = '';
-  let patientData: any = null;
-  let message = '';
+	let patientsPay: string | any[] = [];
+	let patientIDInput = ''; // 綁定到 input 的值
 
-  // 查詢病患
-  async function searchPatient() {
-    message = '';
-    patientData = null;
+	// 獲取資料的函式
+	async function fetchData() {
+		let url = '/api/patientsPay';
+		// 如果 input 有值，就加到 URL 的 query string
+		if (patientIDInput) {
+			url += `?patientID=${patientIDInput}`;
+		}
 
-    const res = await fetch('http://127.0.0.1:7999/api/viewPatientsInfo');
-    const data: Record<string, any> = await res.json();
+		try {
+			const res = await fetch(url);
+			if (res.ok) {
+				patientsPay = await res.json();
+			} else {
+				console.error('Failed to fetch data', await res.text());
+				patientsPay = []; // 清空舊資料
+			}
+		} catch (error) {
+			console.error('Error fetching data:', error);
+			patientsPay = []; // 清空舊資料
+		}
+	}
 
-    // 從 JSON 中找病患
-    const found = Object.entries(data).find(
-      ([, info]) => info.name === patientName
-    );
+	// 頁面載入時，先獲取一次所有資料
+	onMount(() => {
+		fetchData();
+	});
 
-    if (found) {
-      const [id, info] = found;
-      patientData = { id, ...info };
-    } else {
-      message = '找不到該病患';
-    }
-  }
-
-  // 確認繳費
-  async function confirmPayment() {
-    if (!patientData) return;
-
-    const url = `http://127.0.0.1:7999/api/patientsPay?patientID=${patientData.id}`;
-    const res = await fetch(url);
-    const result = await res.json();
-
-    console.log(result);
-    message = '已更新繳費狀態';
-    
-    // 更新畫面（模擬刷新）
-    patientData.paied = '已繳費';
-  }
 </script>
 
-<h2>查詢病患資訊</h2>
+<h1>病患付款資料查詢</h1>
 
-<input
-  type="text"
-  placeholder="輸入病患名字"
-  bind:value={patientName}
-/>
-<button on:click={searchPatient}>查詢</button>
+<div class="search-container">
+    <input type="text" class="inputID" bind:value={patientIDInput} placeholder="請輸入病患ID (例如 P001)" />
+    <button on:click={fetchData}>查詢</button>
+</div>
 
-{#if message}
-  <p>{message}</p>
-{/if}
-
-{#if patientData}
-  <div class="patient-info">
-    <h3>{patientData.name} ({patientData.id})</h3>
-    <p>生日：{patientData.dob}</p>
-    <p>聯絡電話：{patientData.contact}</p>
-    <p>診斷：{patientData.diagnosis || '尚未診斷'}</p>
-    <p>結果：{patientData.result || '無'}</p>
-    <p>繳費狀態：{patientData.paied || '未繳費'}</p>
-
-    {#if patientData.paied !== '已繳費'}
-      <button on:click={confirmPayment}>確認繳費</button>
-    {/if}
-  </div>
+{#if patientsPay.length > 0}
+	<table>
+		<thead>
+			<tr>
+				<th>病患ID</th>
+				<th>姓名</th>
+				<th>應付金額</th>
+				<th>已付金額</th>
+				<th>付款狀態</th>
+			</tr>
+		</thead>
+		<tbody>
+			{#each patientsPay as patient}
+				<tr>
+					<td>{patient.PatientID}</td>
+					<td>{patient.Name}</td>
+					<td>{patient.TotalAmount}</td>
+					<td>{patient.PaidAmount}</td>
+					<td>{patient.PaymentStatus}</td>
+				</tr>
+			{/each}
+		</tbody>
+	</table>
+{:else}
+    <p>查無資料或無待繳費項目。</p>
 {/if}
 
 <style>
-  .patient-info {
-    margin-top: 1rem;
-    padding: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-  }
-  input {
-    margin-right: 0.5rem;
-    padding: 0.3rem;
-  }
+    .search-container {
+        margin-bottom: 1rem;
+    }
+    .inputID {
+        padding: 0.5rem;
+        margin-right: 0.5rem;
+    }
+	table {
+		width: 100%;
+		border-collapse: collapse;
+	}
+	th, td {
+		border: 1px solid #ddd;
+		padding: 8px;
+		text-align: left;
+	}
+	th {
+		background-color: #f2f2f2;
+	}
 </style>
