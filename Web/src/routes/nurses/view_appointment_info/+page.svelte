@@ -1,5 +1,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
+    import { goto } from '$app/navigation';
 
     type DoctorsInfo = {
         patientID: number;
@@ -37,8 +38,21 @@
     });
 </script>
 
+<svelte:head>
+    <title>預約資料列表 - 湯閣牙醫院</title>
+</svelte:head>
+
+
 <main>
-    <h1>預約掛號狀態列表</h1>
+    <div class="header-nav">
+        <button class="btn-back" onclick={() => goto('/nurses')}>
+            ‹ 返回
+        </button>
+        <button class="btn-add" onclick={() => goto('/nurses/add_new_appointment')}>
+            + 新增預約掛號
+        </button>
+    </div>
+
 
     {#if loading}
         <p>正在從伺服器載入資料...</p>
@@ -107,7 +121,39 @@
     h1 {
         color: #333;
     }
-
+    .header-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.2rem;
+    }
+    .btn-back {
+        background: #f1f5f9;
+        color: #334155;
+        border: 1px solid #cbd5e1;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+    .btn-back:hover {
+        background: #e2e8f0;
+        color: #0f172a;
+    }
+        .btn-add {
+        background: #059669;
+        color: white;
+        border: none;
+        padding: 0.5rem 1.1rem;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background 0.2s;
+    }
+    .btn-add:hover {
+        background: #047857;
+    }
     .big-table-container {
         padding: 10px;
     }

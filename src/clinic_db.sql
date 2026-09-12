@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS doctors (
     address VARCHAR(255) DEFAULT NULL COMMENT '地址',
     history TEXT DEFAULT NULL COMMENT '經歷/專業背景',
     dept_id INT DEFAULT NULL COMMENT '所屬部門 FK',
+    title VARCHAR(50) DEFAULT NULL COMMENT '職稱（例如：一般牙科醫生、矯正牙科醫生、實習醫生、主任等）',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_doctor_dept FOREIGN KEY (dept_id)
         REFERENCES departments(dept_id)
@@ -49,6 +50,7 @@ CREATE TABLE IF NOT EXISTS nurses (
     phone VARCHAR(20) DEFAULT NULL COMMENT '聯絡電話',
     address VARCHAR(255) DEFAULT NULL COMMENT '地址',
     dept_id INT DEFAULT NULL COMMENT '所屬部門 FK',
+    title VARCHAR(50) DEFAULT NULL COMMENT '職稱（例如：一般牙醫助理、矯正牙醫助理、櫃檯護士等）',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_nurse_dept FOREIGN KEY (dept_id)
         REFERENCES departments(dept_id)
@@ -73,8 +75,23 @@ CREATE TABLE IF NOT EXISTS patients (
 -- 5. 預約資料表 (Appointment)                                                                                 
 -- 關係: Patient 1 : N Appointment, Doctor 1 : N Appointment                                                   
 -- =========================================================                                                   
-
-CREATE TABLE IF NOT EXISTS appointments (    appointment_id INT AUTO_INCREMENT PRIMARY KEY COMMENT '預約編號',    patient_id INT NOT NULL COMMENT '病人 FK',    doc_id INT NOT NULL COMMENT '醫生 FK',    appointment_time DATETIME NOT NULL COMMENT '預約看診時間',    item VARCHAR(100) NOT NULL COMMENT '看診項目（如：洗牙、補牙、諮詢）',    status ENUM('Scheduled', 'Completed', 'Cancelled') DEFAULT 'Scheduled' COMMENT '預約狀態',    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,    CONSTRAINT fk_appoint_patient FOREIGN KEY (patient_id)        REFERENCES patients(patient_id)        ON UPDATE CASCADE        ON DELETE RESTRICT,    CONSTRAINT fk_appoint_doctor FOREIGN KEY (doc_id)        REFERENCES doctors(doc_id)        ON UPDATE CASCADE        ON DELETE RESTRICT) ENGINE=InnoDB COMMENT='看診預約表';
+CREATE TABLE IF NOT EXISTS appointments (
+    appointment_id INT AUTO_INCREMENT PRIMARY KEY COMMENT '預約編號',
+    patient_id INT NOT NULL COMMENT '病人 FK',
+    doc_id INT NOT NULL COMMENT '醫生 FK',
+    appointment_time DATETIME NOT NULL COMMENT '預約看診時間',
+    item VARCHAR(100) NOT NULL COMMENT '看診項目（如：洗牙、補牙、諮詢）',
+    status ENUM('Scheduled', 'Completed', 'Cancelled') DEFAULT 'Scheduled' COMMENT '預約狀態',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_appoint_patient FOREIGN KEY (patient_id)
+        REFERENCES patients(patient_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+    CONSTRAINT fk_appoint_doctor FOREIGN KEY (doc_id)
+        REFERENCES doctors(doc_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
+) ENGINE=InnoDB COMMENT='看診預約表';
 
 -- =========================================================                                                   
 -- 6. 病歷紀錄表 (MedicalRecord)                                                                               
@@ -146,3 +163,24 @@ CREATE TABLE IF NOT EXISTS expenses (
         ON UPDATE CASCADE
         ON DELETE RESTRICT
 ) ENGINE=InnoDB COMMENT='費用與帳務表';
+
+-- =========================================================
+-- 10. 管理員資料表 (Admin)
+-- 職責: 業務權限管理 Doctor (1 : N), Nurse (1 : N)
+-- =========================================================
+CREATE TABLE IF NOT EXISTS admins (
+    admin_id VARCHAR(10) PRIMARY KEY COMMENT '管理員編號',
+    name VARCHAR(50) NOT NULL COMMENT '姓名',
+    username VARCHAR(50) NOT NULL UNIQUE COMMENT '登入帳號（唯一）',
+    password_hash VARCHAR(255) NOT NULL COMMENT '密碼雜湊值（建議存雜湊值）',
+    phone VARCHAR(20) DEFAULT NULL COMMENT '電話',
+    email VARCHAR(100) DEFAULT NULL COMMENT '信箱',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '建立時間',
+    is_active TINYINT(1) NOT NULL DEFAULT 1 COMMENT '是否啟用（1=啟用, 0=停用）'
+) ENGINE=InnoDB COMMENT='管理員表';
+
+-- =========================================================
+-- 既有資料表增量更新語法 (若資料庫與舊表已存在，可直接執行以下 ALTER 語法)：
+-- =========================================================
+-- ALTER TABLE doctors ADD COLUMN title VARCHAR(50) DEFAULT NULL COMMENT '職稱' AFTER dept_id;
+-- ALTER TABLE nurses ADD COLUMN title VARCHAR(50) DEFAULT NULL COMMENT '職稱' AFTER dept_id;

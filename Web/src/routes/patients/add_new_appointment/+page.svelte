@@ -1,19 +1,15 @@
 <script lang="ts">
-
-    let name = '';
-    let birth = '';
-    let phone = '';
-    let address = '';
-    let department_id = '';
-    let title = '';
+    let doctorID = '';
+    let reason = '';
+    let patientID = '';
 
     let submitting = false;
     let message = '';
     let errorMsg = '';
 
     async function submitForm() {
-        if (!name || !phone || !department_id) {
-            errorMsg = '請至少填寫護士姓名、電話號碼與所屬科室！';
+        if (!doctorID || !patientID) {
+            errorMsg = '請至少填寫病人 ID 與醫生 ID！';
             return;
         }
 
@@ -22,28 +18,22 @@
         errorMsg = '';
 
         try {
-            const response = await fetch('http://localhost:7999/api/newNurse', {
+            const response = await fetch('http://localhost:7999/api/appointADocter', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    name,
-                    birth,
-                    phone: parseInt(phone) || phone,
-                    address,
-                    department_id: parseInt(department_id) || department_id,
-                    title
+                    doctorID,
+                    reason,
+                    patientID
                 })
             });
 
             const data = await response.json();
             if (response.ok) {
-                message = `護士資料登記成功！護士編號：${data.nurse_id}`;
-                name = '';
-                birth = '';
-                phone = '';
-                address = '';
-                department_id = '',
-                title=''
+                message = `預約成功！${data.message}`;
+                doctorID = '';
+                reason = '';
+                patientID = ''
             } else {
                 errorMsg = data.message || '登記失敗，請檢查輸入資料';
             }
@@ -56,41 +46,26 @@
 </script>
 
 <main>
-    <h1>新增護士資料</h1>
+    <h1>新增患者病歷</h1>
 
     <div class="form-container">
         <div class="field">
-            <label for="name">護士姓名 *</label>
-            <input id="name" type="text" bind:value={name} placeholder="請輸入護士姓名" required />
+            <label for="doctorID">醫生 ID *</label>
+            <input id="doctorID" type="text" bind:value={doctorID} placeholder="請輸入醫生 ID" required />
         </div>
 
         <div class="field">
-            <label for="birth">出生日期</label>
-            <input id="birth" type="date" bind:value={birth} />
+            <label for="reason">看診原因</label>
+            <input id="reason" type="text" bind:value={reason} />
         </div>
 
         <div class="field">
-            <label for="phone">電話號碼 *</label>
-            <input id="phone" type="tel" bind:value={phone} placeholder="例如：0912345678" required />
-        </div>
-
-        <div class="field">
-            <label for="address">通訊地址</label>
-            <input id="address" type="text" bind:value={address} placeholder="請輸入地址" />
-        </div>
-
-        <div class="department_id">
-            <label for="department_id">所屬科室</label>
-            <input id="department_id" type="number" bind:value={department_id} required />
-        </div>
-
-        <div class="title">
-            <label for="title">就任職稱</label>
-            <input id="title" type="text" bind:value={title} />
+            <label for="patientID">病人 ID *</label>
+            <input id="patientID" type="text" bind:value={patientID} placeholder="請輸入病人 ID" required />
         </div>
 
         <button on:click|preventDefault={submitForm} disabled={submitting}>
-            {submitting ? '登記中...' : '確認登記'}
+            {submitting ? '預約中...' : '預約成功'}
         </button>
 
         {#if message}

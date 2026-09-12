@@ -44,10 +44,10 @@
 
 <main>
     <div class="header-nav">
-        <button class="btn-back" onclick={() => goto('/nurses')}>
+        <button class="btn-back" onclick={() => goto('/doctors')}>
             ‹ 返回
         </button>
-        <button class="btn-add" onclick={() => goto('/nurses/add_new_medications')}>
+        <button class="btn-add" onclick={() => goto('/doctors/add_new_medications')}>
             + 新增藥品資訊
         </button>
     </div>

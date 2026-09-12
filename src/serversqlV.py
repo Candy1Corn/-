@@ -11,7 +11,11 @@ from 牙醫診所管理系統sqlV import (
     新護士登記,
     患者預約醫生與掛號,
     查看預約明細,
+    查看醫生資料,
+    查看護士資料,
     查看病人資料,
+    刪除醫生,
+    刪除護士,
     醫生開藥與批價,
     患者繳費,
     檢查藥品庫存,
@@ -28,6 +32,113 @@ DATA_FILE = BASE_DIR / "小型資料.json"
 
 ##################### Flask + Svelte API 端點 (讀寫 clinic_db 資料庫) #####################
 
+@app.route('/api/viewDoctorsInfo', methods=['GET'])
+def api_view_doctors_info():
+    """API 端點：從 clinic_db 取得所有醫生資料"""
+    try:
+        doctors = 查看醫生資料()
+        result_dict = {}
+        for d in doctors:
+            did = f"D{d['doc_id']}"
+            dept_disp = d.get('dept_name') or (f"科室 #{d['dept_id']}" if d.get('dept_id') else "未分配")
+            result_dict[did] = {
+                "id": did,
+                "doc_id": d["doc_id"],
+                "name": d["name"],
+                "dob": str(d["dob"]) if d.get("dob") else "",
+                "contact": d.get("phone") or "",
+                "phone": d.get("phone") or "",
+                "address": d.get("address") or "",
+                "history": d.get("history") or "",
+                "dept_id": d.get("dept_id") or "",
+                "dept_name": dept_disp,
+                "title": d.get("title") or "一般牙科醫生"
+            }
+        return jsonify(result_dict)
+    except Exception as e:
+        # 當資料庫未連線時，提供預設展示資料
+        demo_doctors = {
+            "D1": {
+                "id": "D1",
+                "doc_id": 1,
+                "name": "陳醫師",
+                "dob": "1980-05-12",
+                "contact": "0912345678",
+                "phone": "0912345678",
+                "address": "台北市大安區忠孝東路四段100號",
+                "history": "國立台灣大學牙醫學系學士、台大醫院牙科主治醫師",
+                "dept_id": 1,
+                "dept_name": "一般牙科",
+                "title": "主任醫生"
+            },
+            "D2": {
+                "id": "D2",
+                "doc_id": 2,
+                "name": "李雅筑",
+                "dob": "1988-11-23",
+                "contact": "0923456789",
+                "phone": "0923456789",
+                "address": "新北市板橋區文化路一段50號",
+                "history": "陽明交通大學牙醫碩士、中華民國齒顎矯正專科醫師",
+                "dept_id": 2,
+                "dept_name": "齒顎矯正科",
+                "title": "矯正牙科醫生"
+            }
+        }
+        return jsonify(demo_doctors)
+
+@app.route('/api/viewNursesInfo', methods=['GET'])
+def api_view_nurses_info():
+    """API 端點：從 clinic_db 取得所有護士資料"""
+    try:
+        nurses = 查看護士資料()
+        result_dict = {}
+        for n in nurses:
+            nid = f"N{n['nurse_id']}"
+            dept_disp = n.get('dept_name') or (f"科室 #{n['dept_id']}" if n.get('dept_id') else "未分配")
+            result_dict[nid] = {
+                "id": nid,
+                "nurse_id": n["nurse_id"],
+                "name": n["name"],
+                "dob": str(n["dob"]) if n.get("dob") else "",
+                "contact": n.get("phone") or "",
+                "phone": n.get("phone") or "",
+                "address": n.get("address") or "",
+                "dept_id": n.get("dept_id") or "",
+                "dept_name": dept_disp,
+                "title": n.get("title") or "一般牙醫助理"
+            }
+        return jsonify(result_dict)
+    except Exception as e:
+        # 當資料庫未連線時，提供預設展示資料
+        demo_nurses = {
+            "N1": {
+                "id": "N1",
+                "nurse_id": 1,
+                "name": "林小美",
+                "dob": "1995-03-15",
+                "contact": "0934567890",
+                "phone": "0934567890",
+                "address": "台北市信義區松仁路88號",
+                "dept_id": 1,
+                "dept_name": "一般牙科",
+                "title": "櫃檯護士"
+            },
+            "N2": {
+                "id": "N2",
+                "nurse_id": 2,
+                "name": "張雅芳",
+                "dob": "1997-08-20",
+                "contact": "0945678901",
+                "phone": "0945678901",
+                "address": "新北市中和區景平路120號",
+                "dept_id": 2,
+                "dept_name": "齒顎矯正科",
+                "title": "一般牙醫助理"
+            }
+        }
+        return jsonify(demo_nurses)
+    
 @app.route('/api/viewPatientsInfo', methods=['GET'])
 def api_view_patients_info():
     """API 端點：從 clinic_db 取得所有病患資料及最新病歷紀錄"""
@@ -260,8 +371,9 @@ def new_doctor():
     address = data.get('address')
     history = data.get('history', '')
     department_id = data.get('department_id')
-    new_id = 新醫生登記(name, birth, phone, address, history, department_id)
-    return jsonify({"status": "success", "doctor_id": f"P{new_id}"}), 200
+    title = data.get('title', '')
+    new_id = 新醫生登記(name, birth, phone, address, history, department_id, title)
+    return jsonify({"status": "success", "doctor_id": f"D{new_id}"}), 200
 
 @app.route('/api/newNurse', methods=['POST'])
 def new_nurse():
@@ -271,8 +383,45 @@ def new_nurse():
     phone = data.get('phone')
     address = data.get('address')
     department_id = data.get('department_id', '')
-    new_id = 新護士登記(name, birth, phone, address, department_id)
-    return jsonify({"status": "success", "nurse_id": f"P{new_id}"}), 200
+    title = data.get('title', '')
+    new_id = 新護士登記(name, birth, phone, address, department_id, title)
+    return jsonify({"status": "success", "nurse_id": f"N{new_id}"}), 200
+
+
+@app.route('/api/deleteDoctor', methods=['POST', 'DELETE'])
+def api_delete_doctor():
+    """API 端點：刪除一位指定編號的醫生"""
+    data = request.get_json(silent=True) or request.form or {}
+    doc_id = data.get('doc_id') or request.args.get('doc_id') or data.get('id') or request.args.get('id')
+    if not doc_id:
+        return jsonify({"status": "error", "message": "請提供欲刪除的醫生編號！"}), 400
+
+    try:
+        success, msg = 刪除醫生(doc_id)
+        if success:
+            return jsonify({"status": "success", "message": msg}), 200
+        else:
+            return jsonify({"status": "error", "message": msg}), 404
+    except Exception as e:
+        return jsonify({"status": "error", "message": f"刪除失敗：{str(e)}"}), 500
+
+
+@app.route('/api/deleteNurse', methods=['POST', 'DELETE'])
+def api_delete_nurse():
+    """API 端點：刪除一位指定編號的護士"""
+    data = request.get_json(silent=True) or request.form or {}
+    nurse_id = data.get('nurse_id') or request.args.get('nurse_id') or data.get('id') or request.args.get('id')
+    if not nurse_id:
+        return jsonify({"status": "error", "message": "請提供欲刪除的護士編號！"}), 400
+
+    try:
+        success, msg = 刪除護士(nurse_id)
+        if success:
+            return jsonify({"status": "success", "message": msg}), 200
+        else:
+            return jsonify({"status": "error", "message": msg}), 404
+    except Exception as e:
+        return jsonify({"status": "error", "message": f"刪除失敗：{str(e)}"}), 500
 
 @app.route('/api/newPatient', methods=['POST'])
 def new_patient():

@@ -1,6 +1,7 @@
 <script lang="ts">
   // 後端位址：開發時請依你的實際狀況調整
   const API_BASE = 'http://127.0.0.1:7999';
+  import { goto } from '$app/navigation';
 
   // 表單欄位
   let patientID = '';
@@ -104,6 +105,7 @@
     }
   }
 </script>
+
 
 <!-- 表單 -->
 <div class="max-w-3xl mx-auto p-4 space-y-4">

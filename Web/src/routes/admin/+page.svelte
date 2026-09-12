@@ -4,14 +4,16 @@
 
 <h1>Hi Admin</h1>
 
-<button onclick={() => goto('nurses/view_patients_info')}> 查看患者資料 </button>
-<button onclick={() => goto('nurses/view_medications_info')}> 查看藥品資訊 </button>
-<button onclick={() => goto('nurses/view_appointment_info')}> 查看預約掛號狀況 </button>
-<button onclick={() => goto('nurses/check_price')}> 查看付款資訊 </button>
-<button onclick={() => goto('admin/add_new_doctor')}> 新增醫生資訊 </button>
-<button onclick={() => goto('admin/add_new_nurse')}> 新增護士資訊 </button>
-<button onclick={() => goto('nurses/add_new_patient')}> 新增患者病歷 </button>
-<button onclick={() => goto('nurses/add_new_medications')}> 新增藥品資訊 </button>
+<button onclick={() => goto('/admin/add_new_patient')}> 新增患者病歷 </button>
+<button onclick={() => goto('/admin/view_patients_info')}> 查看所有患者資料 </button>
+<button onclick={() => goto('/admin/add_new_doctor')}> 新增醫生資訊 </button>
+<button onclick={() => goto('/admin/view_doctors_info')}> 查看所有醫生資訊 </button>
+<button onclick={() => goto('/admin/add_new_nurse')}> 新增護士資訊 </button>
+<button onclick={() => goto('/admin/view_nurses_info')}> 查看所有護士資訊 </button>
+<button onclick={() => goto('/admin/view_medications_info')}> 查看藥品資訊 </button>
+<button onclick={() => goto('/admin/add_new_medications')}> 新增藥品資訊 </button>
+<button onclick={() => goto('/admin/view_appointment_info')}> 查看預約掛號狀況 </button>
+<button onclick={() => goto('/nurses/check_price')}> 查看付款資訊 </button>
 
 <style>
     a {

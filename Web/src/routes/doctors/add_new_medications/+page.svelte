@@ -1,19 +1,16 @@
 <script lang="ts">
 
-    let name = '';
-    let birth = '';
-    let phone = '';
-    let address = '';
-    let department_id = '';
-    let title = '';
+    let medicationsName = '';
+    let quantity = '';
+    let threshold = '';
 
     let submitting = false;
     let message = '';
     let errorMsg = '';
 
     async function submitForm() {
-        if (!name || !phone || !department_id) {
-            errorMsg = '請至少填寫護士姓名、電話號碼與所屬科室！';
+        if (!medicationsName || !threshold) {
+            errorMsg = '請填寫完整資訊！';
             return;
         }
 
@@ -22,28 +19,22 @@
         errorMsg = '';
 
         try {
-            const response = await fetch('http://localhost:7999/api/newNurse', {
+            const response = await fetch('http://localhost:7999/api/newMedications', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    name,
-                    birth,
-                    phone: parseInt(phone) || phone,
-                    address,
-                    department_id: parseInt(department_id) || department_id,
-                    title
+                    medicationsName,
+                    quantity: parseInt(quantity) || quantity,
+                    threshold: parseInt(threshold) || threshold,
                 })
             });
 
             const data = await response.json();
             if (response.ok) {
-                message = `護士資料登記成功！護士編號：${data.nurse_id}`;
-                name = '';
-                birth = '';
-                phone = '';
-                address = '';
-                department_id = '',
-                title=''
+                message = `藥品成功入庫！${data.message}`;
+                medicationsName = '';
+                quantity = '';
+                threshold = ''
             } else {
                 errorMsg = data.message || '登記失敗，請檢查輸入資料';
             }
@@ -56,41 +47,26 @@
 </script>
 
 <main>
-    <h1>新增護士資料</h1>
+    <h1>藥品入庫</h1>
 
     <div class="form-container">
         <div class="field">
-            <label for="name">護士姓名 *</label>
-            <input id="name" type="text" bind:value={name} placeholder="請輸入護士姓名" required />
+            <label for="name">藥品名稱 *</label>
+            <input id="med_name" type="text" bind:value={medicationsName} placeholder="請輸入藥品名稱" required />
         </div>
 
         <div class="field">
-            <label for="birth">出生日期</label>
-            <input id="birth" type="date" bind:value={birth} />
+            <label for="quantity">存入數量</label>
+            <input id="qty" type="number" bind:value={quantity} />
         </div>
 
         <div class="field">
-            <label for="phone">電話號碼 *</label>
-            <input id="phone" type="tel" bind:value={phone} placeholder="例如：0912345678" required />
-        </div>
-
-        <div class="field">
-            <label for="address">通訊地址</label>
-            <input id="address" type="text" bind:value={address} placeholder="請輸入地址" />
-        </div>
-
-        <div class="department_id">
-            <label for="department_id">所屬科室</label>
-            <input id="department_id" type="number" bind:value={department_id} required />
-        </div>
-
-        <div class="title">
-            <label for="title">就任職稱</label>
-            <input id="title" type="text" bind:value={title} />
+            <label for="number">警戒值 *</label>
+            <input id="threshold" type="tel" bind:value={threshold} placeholder="填入警戒值" required />
         </div>
 
         <button on:click|preventDefault={submitForm} disabled={submitting}>
-            {submitting ? '登記中...' : '確認登記'}
+            {submitting ? '入庫中...' : '入庫成功'}
         </button>
 
         {#if message}

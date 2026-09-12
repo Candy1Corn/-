@@ -14,42 +14,42 @@ def _parse_id(val):
 
 ################## 看病前 ##################
 
-def 新醫生登記(name, birth, phone, address, history, department_id):
+def 新醫生登記(name, birth, phone, address, history, department_id, title):
     """
     在 doctors 表中新增一筆醫生紀錄
-    對應 SQL 資料表: patients (name, dob, phone, address, history, department_id)
+    對應 SQL 資料表: doctors (name, dob, phone, address, history, dept_id, title)
     """
     dob = str(birth).strip() if birth and str(birth).strip() else None
     phone_str = str(phone).strip() if phone else None
     dept_id = _parse_id(department_id)
 
     sql = """
-        INSERT INTO doctors (name, dob, phone, address, history, dept_id)
+        INSERT INTO doctors (name, dob, phone, address, history, dept_id, title)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
+    """
+    with get_db() as cursor:
+        cursor.execute(sql, (name, dob, phone_str, address, history, dept_id, title))
+        new_id = cursor.lastrowid
+        print(f"成功登記！醫生編號為: D{new_id}")
+        return new_id
+    
+def 新護士登記(name, birth, phone, address, department_id, title):
+    """
+    在 nurses 表中新增一筆護士紀錄
+    對應 SQL 資料表: nurses (name, dob, phone, address, dept_id, title)
+    """
+    dob = str(birth).strip() if birth and str(birth).strip() else None
+    phone_str = str(phone).strip() if phone else None
+    dept_id = _parse_id(department_id)
+
+    sql = """
+        INSERT INTO nurses (name, dob, phone, address, dept_id, title)
         VALUES (%s, %s, %s, %s, %s, %s)
     """
     with get_db() as cursor:
-        cursor.execute(sql, (name, dob, phone_str, address, history, dept_id))
+        cursor.execute(sql, (name, dob, phone_str, address, dept_id, title))
         new_id = cursor.lastrowid
-        print(f"成功登記！醫生編號為: P{new_id}")
-        return new_id
-    
-def 新護士登記(name, birth, phone, address, department_id):
-    """
-    在 nurses 表中新增一筆護士紀錄
-    對應 SQL 資料表: patients (name, dob, phone, address, department_id)
-    """
-    dob = str(birth).strip() if birth and str(birth).strip() else None
-    phone_str = str(phone).strip() if phone else None
-    dept_id = _parse_id(department_id)
-
-    sql = """
-        INSERT INTO nurses (name, dob, phone, address, dept_id)
-        VALUES (%s, %s, %s, %s, %s)
-    """
-    with get_db() as cursor:
-        cursor.execute(sql, (name, dob, phone_str, address, dept_id))
-        new_id = cursor.lastrowid
-        print(f"成功登記！病患編號為: P{new_id}")
+        print(f"成功登記！護士編號為: N{new_id}")
         return new_id
     
 def 新患者登記(name, birth, phone, address, description):
@@ -146,6 +146,45 @@ def 查看預約明細(doctorID=None):
         return records
 
 
+def 查看醫生資料():
+    """
+    查看所有醫生資料清單
+    對應 SQL 資料表: doctors (LEFT JOIN departments)
+    """
+    with get_db() as cursor:
+        sql = """
+            SELECT d.*, dept.name AS dept_name 
+            FROM doctors d 
+            LEFT JOIN departments dept ON d.dept_id = dept.dept_id 
+            ORDER BY d.doc_id ASC
+        """
+        cursor.execute(sql)
+        doctors = cursor.fetchall()
+        print(f"本診所目前累積了 {len(doctors)} 位醫生資料")
+        for d in doctors:
+            dept_info = d.get('dept_name') or (f"科室編號 #{d['dept_id']}" if d.get('dept_id') else "未分配")
+            print(f"D{d['doc_id']}: 姓名: {d['name']}, 生日: {d.get('dob')}, 電話: {d.get('phone')}, 地址: {d.get('address')}, 履歷: {d.get('history')}, 職位: {d.get('title')}, 所在科室: {dept_info}")
+        return doctors
+    
+def 查看護士資料():
+    """
+    查看所有護士資料清單
+    對應 SQL 資料表: nurses (LEFT JOIN departments)
+    """
+    with get_db() as cursor:
+        sql = """
+            SELECT n.*, dept.name AS dept_name 
+            FROM nurses n 
+            LEFT JOIN departments dept ON n.dept_id = dept.dept_id 
+            ORDER BY n.nurse_id ASC
+        """
+        cursor.execute(sql)
+        nurses = cursor.fetchall()
+        print(f"本診所目前累積了 {len(nurses)} 位護士資料")
+        for n in nurses:
+            dept_info = n.get('dept_name') or (f"科室編號 #{n['dept_id']}" if n.get('dept_id') else "未分配")
+            print(f"N{n['nurse_id']}: 姓名: {n['name']}, 生日: {n.get('dob')}, 電話: {n.get('phone')}, 地址: {n.get('address')}, 職位: {n.get('title')}, 所在科室: {dept_info}")
+        return nurses
 def 查看病人資料():
     """
     查看所有病患資料清單
@@ -332,7 +371,57 @@ def 購入藥物(medicationsName, quantity, threshold=10):
                 "INSERT INTO medications (name, stock, threshold) VALUES (%s, %s, %s)",
                 (medicationsName, qty, th)
             )
-            print(f"藥品『{medicationsName}』已入庫！初始庫存: {qty}, 警戒值: {th}")
+
+def 刪除醫生(doc_id):
+    """
+    刪除一位指定編號的醫生
+    對應 SQL 資料表: doctors (並安全清理關聯預約與病歷)
+    """
+    d_id = _parse_id(doc_id)
+    if not d_id:
+        return False, "無效的醫生編號格式！"
+
+    with get_db() as cursor:
+        cursor.execute("SELECT doc_id, name FROM doctors WHERE doc_id = %s", (d_id,))
+        doc = cursor.fetchone()
+        if not doc:
+            return False, f"查無醫生編號 D{d_id}！"
+
+        # 1. 刪除與該醫生關聯的處方與病歷紀錄（避免 Foreign Key RESTRICT 阻擋）
+        cursor.execute("SELECT record_id FROM medical_records WHERE doc_id = %s", (d_id,))
+        records = cursor.fetchall()
+        for r in records:
+            cursor.execute("DELETE FROM prescriptions WHERE record_id = %s", (r["record_id"],))
+        cursor.execute("DELETE FROM medical_records WHERE doc_id = %s", (d_id,))
+
+        # 2. 刪除與該醫生關聯的預約紀錄
+        cursor.execute("DELETE FROM appointments WHERE doc_id = %s", (d_id,))
+
+        # 3. 刪除醫生本體
+        cursor.execute("DELETE FROM doctors WHERE doc_id = %s", (d_id,))
+        print(f"成功刪除醫生：{doc['name']} (D{d_id})！")
+        return True, f"成功刪除醫生：{doc['name']} (D{d_id})"
+
+
+def 刪除護士(nurse_id):
+    """
+    刪除一位指定編號的護士
+    對應 SQL 資料表: nurses
+    """
+    n_id = _parse_id(nurse_id)
+    if not n_id:
+        return False, "無效的護士編號格式！"
+
+    with get_db() as cursor:
+        cursor.execute("SELECT nurse_id, name FROM nurses WHERE nurse_id = %s", (n_id,))
+        nurse = cursor.fetchone()
+        if not nurse:
+            return False, f"查無護士編號 N{n_id}！"
+
+        # 刪除護士本體
+        cursor.execute("DELETE FROM nurses WHERE nurse_id = %s", (n_id,))
+        print(f"成功刪除護士：{nurse['name']} (N{n_id})！")
+        return True, f"成功刪除護士：{nurse['name']} (N{n_id})"
 
 
 if __name__ == "__main__":

@@ -1,8 +1,8 @@
-<script>
+<script lang="ts">
   import { onMount } from 'svelte';
 
   let patientName = '';
-  let patientData = null;
+  let patientData: any = null;
   let message = '';
 
   // 查詢病患
@@ -11,7 +11,7 @@
     patientData = null;
 
     const res = await fetch('http://127.0.0.1:7999/api/viewPatientsInfo');
-    const data = await res.json();
+    const data: Record<string, any> = await res.json();
 
     // 從 JSON 中找病患
     const found = Object.entries(data).find(

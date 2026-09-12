@@ -6,6 +6,7 @@
     let address = '';
     let history = '';
     let department_id = '';
+    let title = '';
 
     let submitting = false;
     let message = '';
@@ -31,7 +32,8 @@
                     phone: parseInt(phone) || phone,
                     address,
                     history,
-                    department_id: parseInt(department_id) || department_id
+                    department_id: parseInt(department_id) || department_id,
+                    title
                 })
             });
 
@@ -43,7 +45,8 @@
                 phone = '';
                 address = '';
                 history = '';
-                department_id = ''
+                department_id = '',
+                title=''
             } else {
                 errorMsg = data.message || '登記失敗，請檢查輸入資料';
             }
@@ -87,6 +90,11 @@
         <div class="department_id">
             <label for="department_id">所屬科室</label>
             <input id="department_id" type="number" bind:value={department_id} required />
+        </div>
+
+        <div class="title">
+            <label for="title">就任職稱</label>
+            <input id="title" type="text" bind:value={title} required />
         </div>
 
         <button on:click|preventDefault={submitForm} disabled={submitting}>

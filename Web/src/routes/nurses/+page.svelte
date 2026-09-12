@@ -2,7 +2,7 @@
     import { goto } from '$app/navigation';
 </script>
 
-<h1>Hi Nurses, here is Nurses' home page</h1>
+<h1>Hi Nurses</h1>
 
 <button onclick={() => goto('nurses/view_patients_info')}> 查看患者資料 </button>
 <button onclick={() => goto('nurses/view_medications_info')}> 查看藥品資訊 </button>
